@@ -1,6 +1,6 @@
 # Ubuntu Touch for Xiaomi Mi 10T (apollo) — WORK IN PROGRESS
 
-> **Status: WIP / experimental.** Boots to the Lomiri home screen; Wi-Fi, mobile data, calls, SMS, audio, Bluetooth, camera (photo + video), flashlight, auto-brightness and proximity work. Many things don't yet.
+> **Status: WIP / experimental.** Boots to the Lomiri home screen; Wi-Fi, mobile data, calls, SMS, audio, Bluetooth, camera (photo + video), flashlight, auto-brightness, proximity and fingerprint enrolment work. Many things don't yet.
 > Not ready for daily use. Flashing replaces Android on the device.
 
 | | |
@@ -42,7 +42,8 @@
 | Stability | ⚠️ | killing PulseAudio during recording panics the kernel (ADSP SMMU fault) |
 | Flashlight | ✅ | Xiaomi `flashlight` LED via device-info |
 | Vibration | ❌ | aw8697 probes; waveform RAM not loaded at boot, still no output after reload (see porting log) |
-| Fingerprint | ❌ | Settings app crashes when opening fingerprint setup |
+| Fingerprint (enroll) | ✅ | FPC HAL via biometryd; needed AppArmor D-Bus mediation (kernel patches 0016-0017) |
+| Fingerprint unlock | ❓ | not tested yet |
 | NFC | ❓ | not tested |
 | Suspend / screen-off power | ❓ | screen off/on works |
 | Home encryption (fscrypt) | ❌ | userdata lacks `encrypt` feature (warning only) |
@@ -67,6 +68,7 @@
 9. **Calls** — IQcRilAudio bridge config, container audio HAL stubbed (it broke ACDB calibration for PulseAudio's HAL).
 8. **Audio** — PulseAudio couldn't parse MIUI's audio policy (unknown flags, 24-bit primary output, mics not routed to "primary input") → `apollo-sanitize-apc`.
 7. **No IPv4 routes from NetworkManager** — kernel treated RTA_GATEWAY 0.0.0.0 as a real gateway (patch 0008).
+11. **Fingerprint / Settings crash** — libapparmor saw AppArmor as disabled (`enabled` param printed `1`, not `Y`) and the kernel lacked `features/dbus` → dbus-daemon had no AppArmor mediation → biometryd 0.4.0 aborted (patches 0016-0017).
 
 ## Building
 

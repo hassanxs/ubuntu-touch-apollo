@@ -274,3 +274,17 @@ Result: wlan0 + p2p0, NetworkManager scan OK.
      PULSE_PASSED_FD (PulseAudio closes every other inherited fd) and execs pulseaudio.
      The container hook drops the `socket audio_hw_socket` line from the stubbed audio service .rc.
 - Result: audio HAL listens, receives ultrasound-proximity=1/0, screen turns off when covered in a call.
+
+### 2026-10-11 — Fingerprint: AppArmor D-Bus mediation (kernel)
+- Settings crashed on Fingerprint ID: biometryd 0.4.0 calls GetConnectionAppArmorSecurityContext for the caller,
+  dbus-daemon answered AppArmorSecurityContextUnknown, biometryd asserted on the empty boost::optional (ABRT),
+  Settings then died on the D-Bus NoReply. (biometryd 0.4.1 uses GetConnectionCredentials, not in the image.)
+- dbus-daemon enables mediation only if libapparmor aa_is_enabled() and features/dbus/mask opens. Two kernel gaps:
+  1. features/dbus missing (Ubuntu SAUCE) → patch 0016 adds features/dbus/mask "acquire send receive"
+     (mediation itself uses the existing label query interface, features/query/label).
+  2. /sys/module/apparmor/parameters/enabled printed "1" (int; this tree has the LSM stacking backport, so it
+     must stay int) → aa_is_enabled() = 0 (ECANCELED). Patch 0017: mainline-style aaintbool param → "Y".
+  Note: build-apollon.sh builds the COMMITTED kernel branch — commit before building.
+- Result: aa_is_enabled 1, dbus returns the label, no dbus AppArmor denials at boot; fingerprint enrolment works
+  (user confirmed), Camera/Browser/Phone apps fine with mediation on.
+- The 4.14 Halium AppArmor set (af_unix SAUCE) is still not applied; not needed so far.
