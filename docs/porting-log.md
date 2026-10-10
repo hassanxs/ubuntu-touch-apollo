@@ -253,3 +253,12 @@ Result: wlan0 + p2p0, NetworkManager scan OK.
   FM tuner = digital silence). Script `apollo-sanitize-apc`, bind-mounted by `apollo-audio-policy.service`.
 - Open: ACDB init fails for voice cal (`msm_audio_ion_import: dma_buf_get failed`, cal type 4/5) → affects calls only?
   32-bit effect libs not loadable (64-bit pulseaudio) — harmless. Wi-Fi debug logging (patch 0006) floods dmesg → limit to errors.
+- Mic follow-up: stereo capture → HAL picks `handset-stereo-dmic-ef` (only hiss) → sanitizer forces primary input
+  to mono 48 kHz → `handset-mic`. Verified: speaker→mic loopback rms ~1600 vs quiet ~55; user's voice audible in
+  playback (low level, ~1 ft away; mic gain/ACDB calibration still missing).
+- **Kernel panic hazard**: killing pulseaudio during an active capture → ADSP SMMU context fault (SID 0x1801,
+  adsp_tbu) → `BUG()` in arm-smmu.c (fault not marked non-fatal) → reboot. Only restart PA while idle. TODO: mark
+  audio CB faults non-fatal or find why the buffer is unmapped while the DSP still writes.
+- Background `parecord` started from an ssh session that then exits yields a few seconds of zeros (stalls) — test artefact.
+- v13 (kernel g76af3c434): qcacld prints only errors to dmesg. Verified after clean reboot: wlan auto-connect + DNS,
+  audio-policy service, edge filter, speaker sink + mono mic source all come up.

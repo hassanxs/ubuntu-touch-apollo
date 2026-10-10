@@ -33,6 +33,10 @@ s = re.sub(r'[ \t]*<route\b[^>]*sources=""[^>]*/>\n?', '', s)
 s = s.replace(',AUDIO_CHANNEL_IN_FRONT_BACK', '').replace('AUDIO_CHANNEL_IN_FRONT_BACK,', '')
 s = re.sub(r'(<mixPort name="primary output"[^>]*>\s*<profile[^>]*?format=")AUDIO_FORMAT_PCM_24_BIT_PACKED',
            r'\g<1>AUDIO_FORMAT_PCM_16_BIT', s)
+# stereo capture makes the HAL use the dual-mic end-fire route (handset-stereo-dmic-ef) -> only hiss here;
+# mono uses the plain handset-mic route
+s = re.sub(r'(<mixPort name="primary input"[^>]*>\s*<profile[^>]*?)samplingRates="[^"]*"\s*channelMasks="[^"]*"',
+           r'\g<1>samplingRates="48000" channelMasks="AUDIO_CHANNEL_IN_MONO"', s)
 # pulseaudio records only through "primary input", but MIUI routes the built-in mics to other mixPorts
 s = re.sub(r'(<route\b[^>]*sink="primary input"[^>]*sources=")(?!Built-In Mic)',
            r'\g<1>Built-In Mic,Built-In Back Mic,', s)

@@ -23,12 +23,13 @@
 | USB networking + SSH (debug) | ✅ | RNDIS 10.15.19.82 |
 | Battery level / charging indicator | ✅ | |
 | Audio: speaker playback | ✅ | pulseaudio-droid + MIUI HAL |
-| Audio: microphone | ✅ | sanitized audio policy (`apollo-audio-policy.service`) |
+| Audio: microphone | ✅ | mono `handset-mic` route; level low until ACDB calibration works |
 | Audio: earpiece / in-call audio, headset | ❓ | voice calibration (ACDB) fails; needs modem first |
 | Sensors (rotation, proximity, light) | ❌ | ADSP/fastrpc not up |
 | Modem: calls, SMS, mobile data (X55) | ❌ | MHI/modem not up |
 | Bluetooth | ❌ | not tested |
 | Camera, video decode (venus) | ❌ | venus firmware load fails |
+| Stability | ⚠️ | killing PulseAudio during recording panics the kernel (ADSP SMMU fault) |
 | Fingerprint, NFC, vibration, flashlight | ❓ | not tested |
 | Suspend / screen-off power | ❓ | screen off/on works |
 | Home encryption (fscrypt) | ❌ | userdata lacks `encrypt` feature (warning only) |
@@ -56,7 +57,7 @@
 
 1. Apply `kernel-patches/` to LineageOS `android_kernel_xiaomi_sm8250` (lineage-23.2 @ `71b13e62f`), branch `halium-23.2`.
 2. Build with UBports `halium-generic-adaptation-build-tools` using `deviceinfo` (`tools/build-apollon.sh`).
-3. Boot image currently = build-tools boot.img kernel + ramdisk overlay that archives pstore (`tools/make-v3-logsave.sh`, `make-v6.sh`, `make-v12.sh`).
+3. Boot image currently = build-tools boot.img kernel + ramdisk overlay that archives pstore (`tools/make-v3-logsave.sh`, `make-v6.sh`, `make-v13.sh`).
 4. System: Halium 12 GSI + VNDK v30 APEX extracted from MIUI `system_ext` (see porting log), `system` partition grown to 6 GiB.
 
 Not yet a reproducible one-command build — the overlay still has to be folded into the image.

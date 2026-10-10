@@ -1,7 +1,7 @@
 From c5b0caf59b0818d8bd762dca56d2a9321cb71eef Mon Sep 17 00:00:00 2001
 From: Hassan <hafizhassanlatif@gmail.com>
 Date: Sat, 10 Oct 2026 17:29:59 +0500
-Subject: [PATCH 8/8] ipv4: treat a 0.0.0.0 RTA_GATEWAY as no gateway
+Subject: [PATCH 8/9] ipv4: treat a 0.0.0.0 RTA_GATEWAY as no gateway
 
 The nexthop backport in this tree sets fc_gw_family = AF_INET for any
 RTA_GATEWAY, so a route with gateway 0.0.0.0 goes through the gateway
