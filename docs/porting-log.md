@@ -251,3 +251,11 @@ Result: wlan0 + p2p0, NetworkManager scan OK.
   the LineageOS vibrator HAL path. Parked to work on other features first.
 - AppArmor: the 4.14 Halium patch set only adds Ubuntu SAUCE socket/af_unix mediation (more restrictive);
   not a cause of missing features. Deferred as hardening.
+
+### 2026-10-11 — Auto-brightness
+- Settings had no "Adjust automatically": repowerd used config-default.xml (config_automatic_brightness_available
+  = false). repowerd loads /usr/share/repowerd/device-configs/config-<ro.product.device>.xml → added
+  config-apollo.xml (merged overlay dir) with the AOSP lux curve, 0-255 scale (panel0-backlight max 4095).
+  getBrightnessParams → (4, 4, 255, 102, true); user confirmed the toggle and that brightness follows ambient light.
+- Light/proximity adaptors (hidlalsadaptor/hidlproximityadaptor) load; one earlier boot repowerd timed out on
+  sensorfw load_plugin and fell back to NullLightSensor — watch for that race after reboots.

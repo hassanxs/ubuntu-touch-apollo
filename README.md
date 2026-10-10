@@ -1,6 +1,6 @@
 # Ubuntu Touch for Xiaomi Mi 10T (apollo) — WORK IN PROGRESS
 
-> **Status: WIP / experimental.** Boots to the Lomiri home screen; Wi-Fi, mobile data, calls, SMS, audio, Bluetooth, camera (photo + video) and flashlight work. Many things don't yet.
+> **Status: WIP / experimental.** Boots to the Lomiri home screen; Wi-Fi, mobile data, calls, SMS, audio, Bluetooth, camera (photo + video), flashlight and auto-brightness work. Many things don't yet.
 > Not ready for daily use. Flashing replaces Android on the device.
 
 | | |
@@ -25,7 +25,8 @@
 | Audio: speaker playback | ✅ | pulseaudio-droid + MIUI HAL |
 | Audio: microphone | ✅ | mono `handset-mic` route; level low until ACDB calibration works |
 | Audio: earpiece / headset | ✅ / ❓ | earpiece OK in calls; headset not tested |
-| Sensors (rotation, proximity, light) | ❌ | ADSP/fastrpc not up |
+| Sensors: rotation, light (auto-brightness) | ✅ | sensorfw HIDL; repowerd profile `config-apollo.xml` enables auto-brightness |
+| Proximity sensor (screen off in calls) | ❓ | sensorfw adaptor loads; not tested in a call yet |
 | Modem / SIM detection, network registration | ✅ | oFono binder plugin (`binder.conf`, `apollo.yaml`) |
 | Mobile data (LTE) | ✅ | tested with Onic/Ufone (APN auto-provisioned) |
 | Voice calls (incoming, two-way audio) | ✅ | needs `ril_subscription.conf` (IQcRilAudio bridge) + container audio HAL stubbed |
@@ -40,7 +41,9 @@
 | Video playback (venus) | ✅ | gallery playback OK |
 | Stability | ⚠️ | killing PulseAudio during recording panics the kernel (ADSP SMMU fault) |
 | Flashlight | ✅ | Xiaomi `flashlight` LED via device-info |
-| Fingerprint, NFC, vibration | ❓ | not tested |
+| Vibration | ❌ | aw8697 probes; waveform RAM not loaded at boot, still no output after reload (see porting log) |
+| Fingerprint | ❌ | Settings app crashes when opening fingerprint setup |
+| NFC | ❓ | not tested |
 | Suspend / screen-off power | ❓ | screen off/on works |
 | Home encryption (fscrypt) | ❌ | userdata lacks `encrypt` feature (warning only) |
 

@@ -13,6 +13,7 @@ path in the rootfs; a file whose target does not exist is skipped. Directories c
 | `usr/lib/udev/rules.d/70-android.rules` | file bind over the stock empty placeholder | device permissions from MIUI ueventd.rc + torch LED |
 | `usr/lib/systemd/system/` | merged dir | units, drop-ins (lxc-android-config, ofono, bluebinder) and enable links |
 | `usr/local/bin`, `usr/local/sbin` | merged dirs | helpers (touch edge mode, Wi-Fi on, audio policy sanitizer, vndservicemanager patcher) |
+| `usr/share/repowerd/device-configs/` | merged dir | `config-apollo.xml`: auto-brightness curve (repowerd picks `config-<ro.product.device>.xml`) |
 | `var/lib/lxc/android/pre-start.d/`, `overrides/` | merged dirs | container pre-start hook + idle stub |
 
 Notes
