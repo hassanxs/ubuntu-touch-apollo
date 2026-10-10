@@ -1,0 +1,13 @@
+#!/bin/sh
+# Mi 10T: start the built-in qcacld (QCA6390) driver -- on Android the Wi-Fi HAL writes ON to /dev/wlan.
+# Wait for cnss cold-boot calibration first, then retry until wlan0 appears.
+for i in $(seq 1 60); do
+    dmesg | grep -q "Calibration completed successfully" && break
+    sleep 1
+done
+for i in 1 2 3; do
+    [ -e /sys/class/net/wlan0 ] && exit 0
+    echo ON > /dev/wlan 2>/dev/null
+    sleep 2
+done
+[ -e /sys/class/net/wlan0 ]

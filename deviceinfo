@@ -1,0 +1,50 @@
+# Ubuntu Touch — Xiaomi Mi 10T (apollo / LineageOS "apollon"), Halium 12
+deviceinfo_name="Mi 10T"
+deviceinfo_manufacturer="Xiaomi"
+deviceinfo_codename="apollo"
+deviceinfo_arch="aarch64"
+# deviceinfo_kernel_arch left unset (build tools derive toolchain prefixes from it)
+deviceinfo_halium_version="12"
+deviceinfo_ubuntu_touch_release="24.04-2.x"
+
+# Kernel: LineageOS android_kernel_xiaomi_sm8250 lineage-23.2 @71b13e62f (= kernel in official
+# LOS 23.2 apollon 20261003) + halium_apollo_defconfig on branch halium-23.2.
+deviceinfo_kernel_source="file:///home/hsn/ut-apollon/kernel-src"
+deviceinfo_kernel_source_branch="halium-23.2"
+deviceinfo_kernel_defconfig="vendor/halium_apollo_defconfig"
+deviceinfo_kernel_clang_compile="true"
+deviceinfo_kernel_llvm_compile="true"              # LOS: TARGET_KERNEL_NO_GCC, LTO/CFI/SCS
+deviceinfo_kernel_use_lld="true"
+deviceinfo_kernel_clang_branch="main-kernel-build-2024"
+deviceinfo_kernel_clang_revision="r510928"
+deviceinfo_kernel_disable_modules="false"         # "true" breaks overlaystore step
+deviceinfo_kernel_use_dtc_ext="false"
+deviceinfo_kernel_image_name="Image"
+
+# LOS 23.2 apollon cmdline + Ubuntu Touch additions
+# NOTE: header-v2 cmdline field is 512 bytes; Xiaomi ABL ignores the "extra" cmdline -> keep < 512, systempart FIRST.
+deviceinfo_kernel_cmdline="systempart=/dev/mapper/system androidboot.hardware=qcom androidboot.memcg=1 lpm_levels.sleep_disabled=1 msm_rtb.filter=0x237 service_locator.enable=1 androidboot.usbcontroller=a600000.dwc3 swiotlb=2048 loop.max_part=7 cgroup.memory=nokmem,nosocket reboot=panic_warm androidboot.fstab_suffix=qcom apparmor=1 lsm=lockdown,yama,integrity,apparmor firmware_class.path=/vendor/firmware printk.devkmsg=on"
+
+# Boot image: header v2 like official LOS boot.img; A-only, separate 128 MiB recovery partition
+deviceinfo_bootimg_header_version="2"
+deviceinfo_flash_pagesize="4096"
+deviceinfo_flash_offset_base="0x00000000"
+deviceinfo_flash_offset_kernel="0x00008000"
+deviceinfo_flash_offset_ramdisk="0x01000000"
+deviceinfo_flash_offset_second="0x00000000"
+deviceinfo_flash_offset_tags="0x00000100"
+deviceinfo_flash_offset_dtb="0x01f00000"
+deviceinfo_bootimg_os_version="12"
+deviceinfo_bootimg_os_patch_level="2023-06-01"    # MIUI V14.0.4.0 security patch
+deviceinfo_bootimg_partition_size="134217728"
+# DTB extracted from official LOS 23.2 apollon 20261003 boot.img (same kernel commit)
+deviceinfo_bootimg_prebuilt_dtb="lineage-apollon.dtb"
+deviceinfo_skip_dtbo_partition="true"             # never touch MIUI's dtbo during tests
+# dynamic partitions: default Halium "dynparts" initrd (no prebuilt source set)
+deviceinfo_ramdisk_compression="gzip"
+deviceinfo_has_recovery_partition="false"
+deviceinfo_use_unified_recovery="false"
+
+deviceinfo_rootfs_image_sector_size="4096"
+deviceinfo_system_partition_size="4096M"          # grow `system` in super (drop product/system_ext)
+deviceinfo_use_overlaystore="true"

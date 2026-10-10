@@ -1,0 +1,11 @@
+# never commit partition backups, device dumps, logs or built images
+*.img
+*.bin
+*.tgz
+*.zip
+*.apex
+*.core
+*.nosel
+firmware/
+logs/
+out/

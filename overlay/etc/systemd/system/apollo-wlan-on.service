@@ -1,0 +1,14 @@
+[Unit]
+Description=Mi 10T: power on QCA6390 Wi-Fi (create wlan0)
+After=lxc-android-config.service
+Before=NetworkManager.service
+ConditionPathExists=/dev/wlan
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+TimeoutStartSec=180
+ExecStart=/usr/local/sbin/apollo-wlan-on
+
+[Install]
+WantedBy=multi-user.target

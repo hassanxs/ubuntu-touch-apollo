@@ -1,0 +1,9 @@
+#!/bin/sh
+# Mi 10T (apollo): MIUI's /vendor/bin/vndservicemanager aborts when SELinux is not active.
+# Bind a patched copy (SELinux CHECKs skipped, access checks allow) over it. See patch-vsm.py.
+F=/var/lib/lxc/android/overrides/vndservicemanager.nosel
+T=/var/lib/lxc/android/rootfs/vendor/bin/vndservicemanager
+if [ -f "$F" ] && [ -f "$T" ] && ! grep -q " $T " /proc/mounts; then
+    mount -o bind "$F" "$T"
+fi
+exit 0

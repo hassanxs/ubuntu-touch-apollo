@@ -1,0 +1,12 @@
+[Unit]
+Description=Mi 10T: lower touchscreen edge (grip) filter so Lomiri edge swipes work
+ConditionPathExists=/dev/xiaomi-touch
+
+[Service]
+Type=oneshot
+# 7 = Touch_Edge_Filter, level 1 (0 = firmware default, rejects too much of the side edges).
+# The kernel re-applies it after each resume.
+ExecStart=/usr/local/bin/mi-touch-mode 7 1
+
+[Install]
+WantedBy=multi-user.target
