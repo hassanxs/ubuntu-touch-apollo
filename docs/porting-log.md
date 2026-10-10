@@ -295,3 +295,9 @@ Result: wlan0 + p2p0, NetworkManager scan OK.
   `extPlugin=qti` (ofono-binder-plugin-ext-qti → vendor.qti.hardware.radio.ims IImsRadio/imsradioN). Then IMS
   Registered/VoiceCapable/SmsCapable=true → incoming SMS received + VoLTE calls still OK (user confirmed).
   ext plugin hex-dumps every transaction (~460 lines/min) → ofono drop-in Environment=GUTIL_LOG_DEFAULT=warning.
+
+### Bluetooth (bluebinder → vendor IBluetoothHci, QCA6390)
+- bluebinder_wait.sh needs exactly one `init.svc.*bluetooth` = running; MIUI runs vendor.bluetooth-1-0-qti and
+  vendor.xiaomi.cit.bluetooth → waits forever → BT toggles back off. Drop-in waits for vendor.bluetooth-1-0-qti only.
+- `/dev/vhci` missing → CONFIG_BT_HCIVHCI=y (defconfig). v18 (kernel g322d25c18): hci0 UP, powered, scan finds devices.
+- TODO: bluebinder_post.sh "Failed to get bluetooth address" (no ro.*bt.bdaddr_path); controller reports FF:DD:01:BF:EA:B2.

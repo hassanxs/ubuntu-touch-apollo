@@ -1,7 +1,7 @@
 From 833ff21186117c867216f4e18832d29102e3d3f9 Mon Sep 17 00:00:00 2001
 From: Hassan <hafizhassanlatif@gmail.com>
 Date: Sat, 10 Oct 2026 16:05:55 +0500
-Subject: [PATCH 04/10] binder: don't fail transactions when no security
+Subject: [PATCH 04/11] binder: don't fail transactions when no security
  context is available
 
 Android 11+ servicemanagers request the sender's security context
