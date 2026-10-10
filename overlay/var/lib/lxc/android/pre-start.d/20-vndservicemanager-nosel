@@ -1,9 +1,14 @@
 #!/bin/sh
-# Mi 10T (apollo): MIUI's /vendor/bin/vndservicemanager aborts when SELinux is not active.
-# Bind a patched copy (SELinux CHECKs skipped, access checks allow) over it. See patch-vsm.py.
-F=/var/lib/lxc/android/overrides/vndservicemanager.nosel
-T=/var/lib/lxc/android/rootfs/vendor/bin/vndservicemanager
-if [ -f "$F" ] && [ -f "$T" ] && ! grep -q " $T " /proc/mounts; then
-    mount -o bind "$F" "$T"
-fi
+# Mi 10T (apollo): bind-mount replacements over vendor binaries before the Android container starts.
+#  - vndservicemanager.nosel: MIUI's vndservicemanager aborts when SELinux is not active (patch-vsm.py)
+#  - audio-hal-stub: keep the container's audio HAL from fighting pulseaudio's HAL over ACDB calibration
+R=/var/lib/lxc/android/rootfs
+O=/var/lib/lxc/android/overrides
+bind() {
+    if [ -f "$1" ] && [ -f "$2" ] && ! grep -q " $2 " /proc/mounts; then
+        mount -o bind "$1" "$2"
+    fi
+}
+bind $O/vndservicemanager.nosel $R/vendor/bin/vndservicemanager
+bind $O/audio-hal-stub $R/vendor/bin/hw/android.hardware.audio.service
 exit 0

@@ -24,10 +24,13 @@
 | Battery level / charging indicator | ✅ | |
 | Audio: speaker playback | ✅ | pulseaudio-droid + MIUI HAL |
 | Audio: microphone | ✅ | mono `handset-mic` route; level low until ACDB calibration works |
-| Audio: earpiece / in-call audio, headset | ❓ | voice calibration (ACDB) fails; needs modem first |
+| Audio: earpiece / headset | ✅ / ❓ | earpiece OK in calls; headset not tested |
 | Sensors (rotation, proximity, light) | ❌ | ADSP/fastrpc not up |
 | Modem / SIM detection, network registration | ✅ | oFono binder plugin (`binder.conf`, `apollo.yaml`) |
-| Calls, SMS, mobile data | ❓ | not tested yet |
+| Mobile data (LTE) | ✅ | tested with Onic/Ufone (APN auto-provisioned) |
+| Voice calls (incoming, two-way audio) | ✅ | needs `ril_subscription.conf` (IQcRilAudio bridge) + container audio HAL stubbed |
+| Ringtone on incoming call | ❌ | call screen appears, no ring sound |
+| SMS, outgoing calls | ❓ | not tested yet |
 | Bluetooth | ❌ | not tested |
 | Camera, video decode (venus) | ❌ | venus firmware load fails |
 | Stability | ⚠️ | killing PulseAudio during recording panics the kernel (ADSP SMMU fault) |
@@ -51,6 +54,7 @@
 4. **Lomiri crash loop** — `/dev/kgsl-3d0` root-only → udev rules generated from `ueventd.rc` (`overlay/etc/udev/rules.d/70-apollo.rules`).
 5. **Edge swipes** — Novatek grip filter → `mi-touch-mode 7 1` + re-apply on resume (patch 0005).
 6. **Wi-Fi** — firmware path (`/usr/lib/firmware -> /vendor/firmware_mnt/image`), ini path (patch 0007), driver ON at boot.
+9. **Calls** — IQcRilAudio bridge config, container audio HAL stubbed (it broke ACDB calibration for PulseAudio's HAL).
 8. **Audio** — PulseAudio couldn't parse MIUI's audio policy (unknown flags, 24-bit primary output, mics not routed to "primary input") → `apollo-sanitize-apc`.
 7. **No IPv4 routes from NetworkManager** — kernel treated RTA_GATEWAY 0.0.0.0 as a real gateway (patch 0008).
 

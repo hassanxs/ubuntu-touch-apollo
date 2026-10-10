@@ -269,3 +269,17 @@ Result: wlan0 + p2p0, NetworkManager scan OK.
   `/etc/ofono/binder.conf` ([slot1] path=/ril_0, [slot2] path=/ril_1; "Missing path for slot" otherwise).
 - Result: /ril_0 + /ril_1 online, SIMs present (giffgaff UK), slot2 registered roaming on Jazz PK (GSM). Data not
   attached (RoamingAllowed=0). Calls/SMS/data not yet tested (needs user consent: roaming costs).
+- Mobile data: Onic/Ufone SIM, LTE registered, APN ufone.pinternet auto-provisioned; manual context activation →
+  rmnet_data2 10.208.x, ping OK over LTE.
+- Calls: incoming call rings in UI (no ringtone sound yet) and can be answered.
+  1. No audio at all: voice never started (vsid state 1). IQcRilAudio bridge `audiosystem-passthrough-qti` (user unit)
+     exited 2: it derives slots from /etc/ofono/ril_subscription.conf `[ril_N] transport=binder:name=slotN`.
+     Rewrote that file (oFono itself uses binder.conf) → call_state=2 → voice_start_usecase OK → downlink works.
+  2. No uplink: ACDB "allocate_cal_block failed" was caused by the Android container's own audio HAL
+     (vendor.audio-hal, defined first by MIUI init.qcom.rc so Halium's init.disabled.rc can't disable it) registering
+     calibration blocks with ITS fds first; pulseaudio's HAL then hit `dma_buf_get` on foreign fd numbers
+     (debug: fd=18 file=anon_inode:[eventfd]). Fix: idle stub bind-mounted over
+     /vendor/bin/hw/android.hardware.audio.service (pre-start hook). Then `ACDB -> init done!`.
+  3. With working ACDB, MIUI default fluence (voice-dmic-ef) is required for uplink (handset-mic path is 2-ch in
+     MIUI overlay). persist.vendor.audio.fluence.* back to true. → two-way call audio OK (user confirmed).
+- Kernel debug commits (msm_audio_ion fd logging, audio_calibration ALLOCATE logging) are in v15 — drop before release.
