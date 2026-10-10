@@ -33,10 +33,10 @@
 | SMS send / receive | ✅ | incoming SMS arrive over IMS → `extPlugin=qti` in `binder.conf` |
 | VoLTE (IMS) | ✅ | via ofono-binder-plugin-ext-qti |
 | Outgoing calls | ❓ | not tested yet |
-| Bluetooth (on, scan) | ✅ | bluebinder wait fix + CONFIG_BT_HCIVHCI; pairing/audio not tested |
+| Bluetooth (on, scan, pairing) | ✅ | bluebinder wait fix + CONFIG_BT_HCIVHCI; paired with a laptop; BT audio not tested |
 | Camera: photos (back + front) | ✅ | Xiaomi sensor driver close fix + firmware path fix (kernel) |
 | Camera: video recording (with sound) | ✅ | libgbinder ApiLevel=32 so the AudioFlinger bridge registers |
-| Video decode (venus) | ❓ | venus now ONLINE; playback not tested |
+| Video playback (venus) | ✅ | gallery playback OK |
 | Stability | ⚠️ | killing PulseAudio during recording panics the kernel (ADSP SMMU fault) |
 | Flashlight | ✅ | Xiaomi `flashlight` LED via device-info |
 | Fingerprint, NFC, vibration | ❓ | not tested |
