@@ -1,6 +1,6 @@
 # Ubuntu Touch for Xiaomi Mi 10T (apollo) — WORK IN PROGRESS
 
-> **Status: WIP / experimental.** Boots to the Lomiri home screen; Wi-Fi, mobile data, calls, SMS, audio, Bluetooth, camera (photo + video), flashlight and auto-brightness work. Many things don't yet.
+> **Status: WIP / experimental.** Boots to the Lomiri home screen; Wi-Fi, mobile data, calls, SMS, audio, Bluetooth, camera (photo + video), flashlight, auto-brightness and proximity work. Many things don't yet.
 > Not ready for daily use. Flashing replaces Android on the device.
 
 | | |
@@ -26,14 +26,14 @@
 | Audio: microphone | ✅ | mono `handset-mic` route; level low until ACDB calibration works |
 | Audio: earpiece / headset | ✅ / ❓ | earpiece OK in calls; headset not tested |
 | Sensors: rotation, light (auto-brightness) | ✅ | sensorfw HIDL; repowerd profile `config-apollo.xml` enables auto-brightness |
-| Proximity sensor (screen off in calls) | ❓ | sensorfw adaptor loads; not tested in a call yet |
+| Proximity sensor (screen off in calls) | ✅ | Elliptic ultrasound: audio HAL control socket passed to PulseAudio (`apollo-audio-hw-socket`) |
 | Modem / SIM detection, network registration | ✅ | oFono binder plugin (`binder.conf`, `apollo.yaml`) |
 | Mobile data (LTE) | ✅ | tested with Onic/Ufone (APN auto-provisioned) |
 | Voice calls (incoming, two-way audio) | ✅ | needs `ril_subscription.conf` (IQcRilAudio bridge) + container audio HAL stubbed |
 | Ringtone on incoming call | ✅ | media-hub needed AppArmor SO_PEERSEC for unix sockets (kernel patch) |
 | SMS send / receive | ✅ | incoming SMS arrive over IMS → `extPlugin=qti` in `binder.conf` |
 | VoLTE (IMS) | ✅ | via ofono-binder-plugin-ext-qti |
-| Outgoing calls | ❓ | not tested yet |
+| Outgoing calls | ✅ | |
 | Bluetooth (on, scan, pairing) | ✅ | bluebinder wait fix + CONFIG_BT_HCIVHCI; paired with a laptop |
 | Bluetooth audio (A2DP) | ✅ | dual-mode buds: Settings may pair only the LE side; pair the classic (BR/EDR) side, see porting log |
 | Camera: photos (back + front) | ✅ | Xiaomi sensor driver close fix + firmware path fix (kernel) |

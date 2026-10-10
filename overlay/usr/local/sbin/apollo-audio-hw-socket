@@ -1,0 +1,44 @@
+#!/usr/bin/python3 -I
+# apollo-audio-hw-socket: Mi 10T (apollo) proximity = Elliptic Labs ultrasound. The sensor HAL (container) asks
+# the audio HAL to start ultrasound over /dev/socket/audio_hw_socket. On Android, init creates that socket for the
+# audio HAL service; on Ubuntu Touch the audio HAL runs inside PulseAudio (user phablet), which cannot create
+# sockets in /dev/socket. This root service binds the socket at the exact path (libcutils
+# android_get_control_socket() checks it) and passes the fd to PulseAudio's launcher (apollo-pa-launch).
+import os, socket, pwd
+
+PATH = "/dev/socket/audio_hw_socket"
+CTRL = "/run/apollo-audio-hw.sock"
+
+def make_hw_socket():
+    s = socket.socket(socket.AF_UNIX, socket.SOCK_SEQPACKET)
+    try:
+        os.unlink(PATH)
+    except FileNotFoundError:
+        pass
+    s.bind(PATH)
+    os.chmod(PATH, 0o666)
+    return s
+
+def main():
+    pw = pwd.getpwnam("phablet")
+    try:
+        os.unlink(CTRL)
+    except FileNotFoundError:
+        pass
+    srv = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
+    srv.bind(CTRL)
+    os.chown(CTRL, pw.pw_uid, pw.pw_gid)
+    os.chmod(CTRL, 0o600)
+    srv.listen(2)
+    while True:
+        conn, _ = srv.accept()
+        try:
+            hw = make_hw_socket()      # fresh socket for every PulseAudio (re)start
+            socket.send_fds(conn, [b"audio_hw_socket"], [hw.fileno()])
+            hw.close()
+        except OSError as e:
+            print("apollo-audio-hw-socket:", e, flush=True)
+        finally:
+            conn.close()
+
+main()

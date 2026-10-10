@@ -273,3 +273,5 @@ ACTION=="add", KERNEL=="msm_npu", OWNER="system", GROUP="system", MODE="0644"
 
 # Mi 10T: let the session's flashlight (ayatana-indicator-power, runs as phablet) drive the torch LED
 ACTION=="add", SUBSYSTEM=="leds", KERNEL=="flashlight", RUN+="/bin/chmod 0666 /sys%p/brightness"
+# Mi 10T: Elliptic ultrasound proximity devices (MIUI init.target.rc chmods them 0644 in post-fs-data)
+ACTION=="add", KERNEL=="elliptic[01]", MODE="0644"

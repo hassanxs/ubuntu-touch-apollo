@@ -8,6 +8,8 @@
 #  - audio-hal-stub over the container's audio HAL: it would register ACDB calibration with its
 #    own fds first and break the calibration of the HAL running inside pulseaudio.
 #  - audio-hal-stub over storaged: crash-loops (bad_alloc in uid_monitor), unused on Ubuntu Touch.
+#  - audio HAL service .rc without its `socket audio_hw_socket` line: that socket is served by the audio HAL
+#    inside PulseAudio (apollo-audio-hw-socket + apollo-pa-launch); init must not recreate it for the stub.
 R=/var/lib/lxc/android/rootfs
 O=/var/lib/lxc/android/overrides
 RUN=/run/apollo
@@ -28,4 +30,9 @@ fi
 bind $VSM $R/vendor/bin/vndservicemanager
 bind $O/audio-hal-stub $R/vendor/bin/hw/android.hardware.audio.service
 bind $O/audio-hal-stub $R/system/bin/storaged
+ARC=$R/vendor/etc/init/android.hardware.audio.service.rc
+if [ -f $ARC ] && ! grep -q " $ARC " /proc/mounts; then
+    grep -v "socket audio_hw_socket" $ARC > $RUN/android.hardware.audio.service.rc
+fi
+bind $RUN/android.hardware.audio.service.rc $ARC
 exit 0

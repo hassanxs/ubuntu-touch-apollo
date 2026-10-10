@@ -259,3 +259,18 @@ Result: wlan0 + p2p0, NetworkManager scan OK.
   getBrightnessParams → (4, 4, 255, 102, true); user confirmed the toggle and that brightness follows ambient light.
 - Light/proximity adaptors (hidlalsadaptor/hidlproximityadaptor) load; one earlier boot repowerd timed out on
   sensorfw load_plugin and fell back to NullLightSensor — watch for that race after reboots.
+
+### 2026-10-11 — Proximity (Elliptic ultrasound), outgoing calls
+- Outgoing call works (user confirmed).
+- Mi 10T has no optical proximity sensor: "Elliptic Proximity" (sensors.elliptic.so, /dev/elliptic0/1) is
+  ultrasound through the earpiece, driven by the audio HAL. Two blockers:
+  1. /dev/elliptic0/1 were 0600 (MIUI chmods them in init.target.rc, not ueventd) → udev rule 0644.
+  2. On enable the sensor HAL (libultrasound) sends "ultrasound-proximity=1" to /dev/socket/audio_hw_socket,
+     an init socket of the audio HAL service. Here the audio HAL is loaded by PulseAudio (user phablet) and the
+     container's audio service is a stub → "Connection refused", ultrasound_enabled 0.
+     libcutils android_get_control_socket() only accepts an fd bound at exactly /dev/socket/<name>, so:
+     apollo-audio-hw-socket.service (root) binds it and hands the fd over a private unix socket to
+     apollo-pa-launch (PulseAudio ExecStart drop-in), which sets ANDROID_SOCKET_audio_hw_socket and
+     PULSE_PASSED_FD (PulseAudio closes every other inherited fd) and execs pulseaudio.
+     The container hook drops the `socket audio_hw_socket` line from the stubbed audio service .rc.
+- Result: audio HAL listens, receives ultrasound-proximity=1/0, screen turns off when covered in a call.

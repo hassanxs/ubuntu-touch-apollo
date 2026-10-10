@@ -31,7 +31,7 @@ find $S -type f -exec sed -i 's/\r$//' {} +
 find $S -type d -empty -delete                       # leftovers of moved dirs on a Windows checkout
 find $S -type f -exec chmod 644 {} +
 W=$S/usr/lib/systemd/system/multi-user.target.wants; mkdir -p $W
-for u in mi-touch-edge apollo-wlan-on apollo-audio-policy; do ln -sf ../$u.service $W/$u.service; done
+for u in mi-touch-edge apollo-wlan-on apollo-audio-policy apollo-audio-hw-socket; do ln -sf ../$u.service $W/$u.service; done
 chmod 755 $S/usr/local/bin/* $S/usr/local/sbin/* $S/var/lib/lxc/android/pre-start.d/* $S/var/lib/lxc/android/overrides/*
 find $S -type f -name '.halium-overlay-dir' -exec chmod 644 {} +
 find $S | sort > "$LOGDIR/overlay-files.txt"

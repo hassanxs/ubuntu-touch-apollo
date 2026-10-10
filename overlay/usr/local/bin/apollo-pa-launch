@@ -1,0 +1,21 @@
+#!/usr/bin/python3 -I
+# apollo-pa-launch: start PulseAudio with the audio HAL's control socket (ANDROID_SOCKET_audio_hw_socket),
+# received from apollo-audio-hw-socket. Without it PulseAudio starts as usual (no ultrasound proximity).
+import os, sys, socket, time
+
+CTRL = "/run/apollo-audio-hw.sock"
+env = dict(os.environ)
+for _ in range(50):
+    try:
+        c = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
+        c.connect(CTRL)
+        _, fds, _, _ = socket.recv_fds(c, 64, 1)
+        c.close()
+        if fds:
+            os.set_inheritable(fds[0], True)
+            env["ANDROID_SOCKET_audio_hw_socket"] = str(fds[0])
+            env["PULSE_PASSED_FD"] = str(fds[0])   # PulseAudio closes all other inherited fds at startup
+        break
+    except OSError:
+        time.sleep(0.2)
+os.execve("/usr/bin/pulseaudio", ["/usr/bin/pulseaudio"] + sys.argv[1:], env)
