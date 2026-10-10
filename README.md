@@ -34,10 +34,11 @@
 | VoLTE (IMS) | ✅ | via ofono-binder-plugin-ext-qti |
 | Outgoing calls | ❓ | not tested yet |
 | Bluetooth (on, scan) | ✅ | bluebinder wait fix + CONFIG_BT_HCIVHCI; pairing/audio not tested |
-| Camera | ❌ | camera app crashes |
+| Camera | ❌ | app opens, black preview (CamX sensor double-acquire) |
 | Video decode (venus) | ❌ | venus firmware load fails |
 | Stability | ⚠️ | killing PulseAudio during recording panics the kernel (ADSP SMMU fault) |
-| Fingerprint, NFC, vibration, flashlight | ❓ | not tested |
+| Flashlight | ✅ | Xiaomi `flashlight` LED via device-info |
+| Fingerprint, NFC, vibration | ❓ | not tested |
 | Suspend / screen-off power | ❓ | screen off/on works |
 | Home encryption (fscrypt) | ❌ | userdata lacks `encrypt` feature (warning only) |
 

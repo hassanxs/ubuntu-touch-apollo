@@ -301,3 +301,11 @@ Result: wlan0 + p2p0, NetworkManager scan OK.
   vendor.xiaomi.cit.bluetooth → waits forever → BT toggles back off. Drop-in waits for vendor.bluetooth-1-0-qti only.
 - `/dev/vhci` missing → CONFIG_BT_HCIVHCI=y (defconfig). v18 (kernel g322d25c18): hci0 UP, powered, scan finds devices.
 - TODO: bluebinder_post.sh "Failed to get bluetooth address" (no ro.*bt.bdaddr_path); controller reports FF:DD:01:BF:EA:B2.
+
+### Flashlight / camera
+- Flashlight (ayatana-indicator-power): qcom led:torch_N + led:switch_0 → "led short/open fault" (unpopulated
+  channel). Xiaomi `flashlight` LED class (0..750) works: apollo.yaml FlashlightSysfsPath=/sys/class/leds/flashlight/
+  brightness, SimpleEnableValue 400; udev rule 71-apollo-torch.rules chmods it for phablet. User confirmed.
+- Camera: app opens, black preview. CamX: CSLAcquireDeviceHW Sensor0 failed; kernel "cam_sensor: Not in right state
+  to aquire 0" — only camera.provider holds the nodes → double acquire inside MIUI CamX/MiCamX pipelines with a
+  non-MIUI client. TODO (camxoverridesettings / Xiaomi ext disable).
