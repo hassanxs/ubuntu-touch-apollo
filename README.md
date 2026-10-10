@@ -45,8 +45,8 @@
 | GPS | ⚠️ | GNSS HAL works (15 satellites seen by a window); no fix indoors yet; XTRA/NTP assistance fails (no DNS for the container's location daemon) → slow cold starts; outdoor test pending |
 | Fingerprint (enroll) | ✅ | FPC HAL via biometryd; needed AppArmor D-Bus mediation (kernel patches 0016-0017) |
 | Fingerprint unlock | ✅ | lock screen |
-| NFC | ❓ | not tested |
-| Suspend / screen-off power | ❓ | screen off/on works |
+| NFC (read tags) | ✅ | nfcd + binder plugin; YubiKey read as Type 4A/NDEF. Needed /dev/nq-nci owned by nfc (1027) |
+| Suspend / screen-off power | ✅ / ❓ | incoming call wakes the screen-off phone (no cable); battery drain not measured |
 | Home encryption (fscrypt) | ❌ | userdata lacks `encrypt` feature (warning only) |
 
 ## Repository layout

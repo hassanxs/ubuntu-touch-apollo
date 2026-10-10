@@ -310,3 +310,13 @@ Result: wlan0 + p2p0, NetworkManager scan OK.
 - Seen in passing: Camera app SIGSEGV on close (photos fine), one PulseAudio SIGTRAP at 03:03 — watch.
 - CamX log volume (~90% of logcat during camera use) is not controlled by camxoverridesettings.txt
   (overrideLogLevels/logInfoMask=0 had no effect); dropped.
+
+### 2026-10-11 — NFC, wake on call, udev Android IDs
+- Screen off, no cable: an incoming call woke the phone and rang (user confirmed).
+- NFC: UT ships nfcd + nfcd-binder-plugin; the NXP HAL (vendor.nxp.hardware.nfc@2.0, runs as uid 1027) could not
+  open /dev/nq-nci (root:root 0660) → adapter enabled but not powered. With /dev/nq-nci owned by 1027: CORE_INIT
+  ok, nfcd polls, YubiKey detected as Type 4A (ISO-DEP), NDEF read, D-Bus /nfc0/tag0, polling resumes on removal.
+  (Restarting the HAL under a running nfcd leaves polling stuck — restart nfcd after the HAL.)
+- Root cause is generic: gen-udev mapped Android user/group names that do not exist on the Ubuntu side to root.
+  Now mapped to numeric Android IDs (camera 1006, log 1007, wifi 1010, vpn 1016, usb 1018, mtp 1024,
+  drmrpc 1026, nfc 1027, uhid 3011, oem_NNNN → NNNN); 35 rules updated (camera nodes, qseecom, nfc, ...).
