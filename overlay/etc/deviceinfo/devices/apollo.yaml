@@ -1,0 +1,8 @@
+apollo:
+  Name: apollo
+  PrettyName: Xiaomi Mi 10T
+  DeviceType: phone
+  GridUnit: 21
+  PrimaryOrientation: Portrait
+  # Android 12 vendor RIL (qcrild) is HIDL/binder only - no /dev/socket/rild
+  OfonoPlugin: binder

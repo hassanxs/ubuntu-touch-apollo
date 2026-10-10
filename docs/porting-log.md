@@ -262,3 +262,10 @@ Result: wlan0 + p2p0, NetworkManager scan OK.
 - Background `parecord` started from an ssh session that then exits yields a few seconds of zeros (stalls) — test artefact.
 - v13 (kernel g76af3c434): qcacld prints only errors to dmesg. Verified after clean reboot: wlan auto-connect + DNS,
   audio-policy service, edge filter, speaker sink + mono mic source all come up.
+
+### Telephony (oFono + ofono-binder-plugin → MIUI qcrild IRadio@1.5 slot1/slot2)
+- oFono had no modems: wrapper picks ril (socket /dev/socket/rild, absent) unless `device-info get OfonoPlugin` = binder.
+  Fix: `/etc/deviceinfo/devices/apollo.yaml` (OfonoPlugin: binder, PrettyName, GridUnit) +
+  `/etc/ofono/binder.conf` ([slot1] path=/ril_0, [slot2] path=/ril_1; "Missing path for slot" otherwise).
+- Result: /ril_0 + /ril_1 online, SIMs present (giffgaff UK), slot2 registered roaming on Jazz PK (GSM). Data not
+  attached (RoamingAllowed=0). Calls/SMS/data not yet tested (needs user consent: roaming costs).

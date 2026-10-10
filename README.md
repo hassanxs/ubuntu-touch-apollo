@@ -26,7 +26,8 @@
 | Audio: microphone | ✅ | mono `handset-mic` route; level low until ACDB calibration works |
 | Audio: earpiece / in-call audio, headset | ❓ | voice calibration (ACDB) fails; needs modem first |
 | Sensors (rotation, proximity, light) | ❌ | ADSP/fastrpc not up |
-| Modem: calls, SMS, mobile data (X55) | ❌ | MHI/modem not up |
+| Modem / SIM detection, network registration | ✅ | oFono binder plugin (`binder.conf`, `apollo.yaml`) |
+| Calls, SMS, mobile data | ❓ | not tested yet |
 | Bluetooth | ❌ | not tested |
 | Camera, video decode (venus) | ❌ | venus firmware load fails |
 | Stability | ⚠️ | killing PulseAudio during recording panics the kernel (ADSP SMMU fault) |
