@@ -47,7 +47,7 @@
 | Fingerprint unlock | ✅ | lock screen |
 | NFC (read tags) | ✅ | nfcd + binder plugin; YubiKey read as Type 4A/NDEF. Needed /dev/nq-nci owned by nfc (1027) |
 | Suspend / screen-off power | ✅ / ❓ | incoming call wakes the screen-off phone (no cable); battery drain not measured |
-| Home encryption (fscrypt) | ❌ | userdata lacks `encrypt` feature (warning only) |
+| Home encryption (fscrypt) | ⚪ | optional, not enabled: userdata lacks the ext4 `encrypt` flag (one-way `tune2fs` change, deliberately skipped) |
 
 ## Repository layout
 
