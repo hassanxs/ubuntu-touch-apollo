@@ -18,7 +18,9 @@ bind() {
     fi
 }
 
+# /run is noexec and bind mounts inherit that flag -> use a small dedicated tmpfs that allows exec
 mkdir -p $RUN
+mountpoint -q $RUN || mount -t tmpfs -o mode=0755,size=4m apollo-run $RUN
 VSM=$RUN/vndservicemanager.nosel
 if [ ! -f $VSM ] && ! grep -q " $R/vendor/bin/vndservicemanager " /proc/mounts; then
     /usr/bin/python3 /usr/local/sbin/apollo-patch-vsm $R/vendor/bin/vndservicemanager $VSM && chmod 755 $VSM

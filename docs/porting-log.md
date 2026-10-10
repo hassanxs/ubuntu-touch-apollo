@@ -227,3 +227,15 @@ Result: wlan0 + p2p0, NetworkManager scan OK.
   companion channel (UUID 0xae00, adv flags 0x06 = BR/EDR not supported); the classic BR/EDR side has another
   address (embedded in the LE manufacturer data). Paired it via bluetoothctl (`transport bredr` scan) → A2DP sink.
   Known issue: dual-mode buds may need classic pairing; Settings UI pairs the LE identity.
+
+### 2026-10-11 — Install image (overlaystore) built and flashed
+- tools/build-image.sh: build.sh + prepare-fake-ota + system-image-from-ota + VNDK v30 into android-rootfs.img.
+  deviceinfo: LOS defconfig fragments + halium.config (verified identical config), console=tty0, 5120M rootfs.
+- Overlay layout: merged dirs (.halium-overlay-dir), units in /usr/lib/systemd/system (/etc/systemd/system and
+  /etc/udev/rules.d are UT writable paths), udev rules over /usr/lib/udev/rules.d/70-android.rules, /etc/gbinder.conf.
+- vndservicemanager patched at boot (apollo-patch-vsm) — first flash failed: /run is noexec and the bind inherits it
+  → vndservicemanager restart loop → no composer, no modem. Fix: hook mounts its own exec tmpfs at /run/apollo.
+- Backup of the previous working system/boot/misc: WSL ~/ut-apollon/backup-20261011 (sha256 verified).
+- Flashing tip: copy rootfs.img to a Windows-local dir before `fastboot flash system` (134 s vs 632 s over \wsl$).
+- Verified after clean boot: overlay (11 mounts), container hook, Lomiri, Wi-Fi, Onic+IMS, audio devices,
+  AudioFlinger bridge, Bluetooth, coprocessors ONLINE.

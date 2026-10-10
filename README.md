@@ -75,3 +75,5 @@ Follows the UBports porting guide (standalone kernel + Halium 12 GSI, `deviceinf
    `system-image-from-ota.sh`) and adds the VNDK v30 APEX (extracted from MIUI V14.0.4.0 `system_ext` with
    `tools/extract-vndk30.sh` + `tools/flatten-vndk30.sh`; proprietary, not in this repo) to the Halium `android-rootfs.img`.
 3. Output: `boot.img` (boot partition) and `rootfs.img` (system partition, grown to 6 GiB in `super`).
+4. Flash from LineageOS recovery's fastbootd: `fastboot flash system rootfs.img`, `fastboot flash boot boot.img`
+   (userdata is kept). Tested 2026-10-11: all features in the table come up from the image alone.
