@@ -34,8 +34,9 @@
 | VoLTE (IMS) | ✅ | via ofono-binder-plugin-ext-qti |
 | Outgoing calls | ❓ | not tested yet |
 | Bluetooth (on, scan) | ✅ | bluebinder wait fix + CONFIG_BT_HCIVHCI; pairing/audio not tested |
-| Camera | ❌ | app opens, black preview (CamX sensor double-acquire) |
-| Video decode (venus) | ❌ | venus firmware load fails |
+| Camera: photos (back + front) | ✅ | Xiaomi sensor driver close fix + firmware path fix (kernel) |
+| Camera: video recording | ❌ | app hangs after stopping |
+| Video decode (venus) | ❓ | venus now ONLINE; playback not tested |
 | Stability | ⚠️ | killing PulseAudio during recording panics the kernel (ADSP SMMU fault) |
 | Flashlight | ✅ | Xiaomi `flashlight` LED via device-info |
 | Fingerprint, NFC, vibration | ❓ | not tested |
@@ -67,7 +68,7 @@
 
 1. Apply `kernel-patches/` to LineageOS `android_kernel_xiaomi_sm8250` (lineage-23.2 @ `71b13e62f`), branch `halium-23.2`.
 2. Build with UBports `halium-generic-adaptation-build-tools` using `deviceinfo` (`tools/build-apollon.sh`).
-3. Boot image currently = build-tools boot.img kernel + ramdisk overlay that archives pstore (`tools/make-v3-logsave.sh`, `make-v6.sh`, `make-v18.sh`).
+3. Boot image currently = build-tools boot.img kernel + ramdisk overlay that archives pstore (`tools/make-v3-logsave.sh`, `make-v6.sh`, `make-v21.sh`).
 4. System: Halium 12 GSI + VNDK v30 APEX extracted from MIUI `system_ext` (see porting log), `system` partition grown to 6 GiB.
 
 Not yet a reproducible one-command build — the overlay still has to be folded into the image.

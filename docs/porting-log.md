@@ -309,3 +309,13 @@ Result: wlan0 + p2p0, NetworkManager scan OK.
 - Camera: app opens, black preview. CamX: CSLAcquireDeviceHW Sensor0 failed; kernel "cam_sensor: Not in right state
   to aquire 0" — only camera.provider holds the nodes → double acquire inside MIUI CamX/MiCamX pipelines with a
   non-MIUI client. TODO (camxoverridesettings / Xiaomi ext disable).
+- Camera WORKS (v21, kernel gf0980ca26): back + front preview and photos (user confirmed).
+  1. CVP/venus/cdsp offline: firmware requested from the Android container (no /lib/firmware in its mount ns) →
+     kernel patch: firmware_loader also searches /vendor/firmware_mnt/image. venus, cvpss, cdsp now ONLINE.
+  2. Black preview: build uses techpack/camera-xiaomi-cas, whose cam_sensor subdev close calls
+     cam_sensor_shutdown() on EVERY close (clears is_probe_succeed). Device enumeration on UT (~37 s after boot,
+     VIDIOC_QUERYCAP sweep) reset the provider's probe → CAM_ACQUIRE_DEV "Not in right state". Kernel patch: count
+     opens, shut down only on last close.
+  3. Also set persist.vendor.camera.clientname=com.android.camera (container prop, persistent in /data/property);
+     probably not required after (2) — re-test before relying on it.
+- Video recording: starts, app hangs after stop (TODO).

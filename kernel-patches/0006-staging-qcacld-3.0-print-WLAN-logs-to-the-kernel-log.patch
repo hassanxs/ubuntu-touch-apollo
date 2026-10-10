@@ -1,7 +1,7 @@
 From 6607fee7ac6fe463fc2184864be949a5f17747a4 Mon Sep 17 00:00:00 2001
 From: Hassan <hafizhassanlatif@gmail.com>
 Date: Sat, 10 Oct 2026 17:02:09 +0500
-Subject: [PATCH 06/11] staging: qcacld-3.0: print WLAN logs to the kernel log
+Subject: [PATCH 06/13] staging: qcacld-3.0: print WLAN logs to the kernel log
 
 Without QDF_TRACE_PRINT_ENABLE all host driver logs only go to the
 cnss_diag netlink consumer, which is not running during early probe on

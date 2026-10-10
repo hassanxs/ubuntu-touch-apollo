@@ -1,7 +1,7 @@
 From 0737b3a0f56d6b7abb3f15d20927cd11e01ed99b Mon Sep 17 00:00:00 2001
 From: Hassan <hafizhassanlatif@gmail.com>
 Date: Sat, 10 Oct 2026 20:19:06 +0500
-Subject: [PATCH 10/11] apparmor: report the peer cred label for unix sockets
+Subject: [PATCH 10/13] apparmor: report the peer cred label for unix sockets
  in SO_PEERSEC
 
 Mainline 4.19 AppArmor records no peer label on AF_UNIX sockets (that comes
