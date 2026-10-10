@@ -1,6 +1,6 @@
 # Ubuntu Touch for Xiaomi Mi 10T (apollo) — WORK IN PROGRESS
 
-> **Status: WIP / experimental.** Boots to the Lomiri home screen; Wi-Fi + internet work. Many things don't yet.
+> **Status: WIP / experimental.** Boots to the Lomiri home screen; Wi-Fi + internet, speaker and mic work. Many things don't yet.
 > Not ready for daily use. Flashing replaces Android on the device.
 
 | | |
@@ -22,7 +22,9 @@
 | Wi-Fi internet (routes, DNS, browsing) | ✅ | needed ipv4 0.0.0.0-gateway kernel fix (patch 0008) |
 | USB networking + SSH (debug) | ✅ | RNDIS 10.15.19.82 |
 | Battery level / charging indicator | ✅ | |
-| Audio (speaker, mic, earpiece) | ❌ | audio HAL crash-loops |
+| Audio: speaker playback | ✅ | pulseaudio-droid + MIUI HAL |
+| Audio: microphone | ✅ | sanitized audio policy (`apollo-audio-policy.service`) |
+| Audio: earpiece / in-call audio, headset | ❓ | voice calibration (ACDB) fails; needs modem first |
 | Sensors (rotation, proximity, light) | ❌ | ADSP/fastrpc not up |
 | Modem: calls, SMS, mobile data (X55) | ❌ | MHI/modem not up |
 | Bluetooth | ❌ | not tested |
@@ -47,6 +49,7 @@
 4. **Lomiri crash loop** — `/dev/kgsl-3d0` root-only → udev rules generated from `ueventd.rc` (`overlay/etc/udev/rules.d/70-apollo.rules`).
 5. **Edge swipes** — Novatek grip filter → `mi-touch-mode 7 1` + re-apply on resume (patch 0005).
 6. **Wi-Fi** — firmware path (`/usr/lib/firmware -> /vendor/firmware_mnt/image`), ini path (patch 0007), driver ON at boot.
+8. **Audio** — PulseAudio couldn't parse MIUI's audio policy (unknown flags, 24-bit primary output, mics not routed to "primary input") → `apollo-sanitize-apc`.
 7. **No IPv4 routes from NetworkManager** — kernel treated RTA_GATEWAY 0.0.0.0 as a real gateway (patch 0008).
 
 ## Building (outline)

@@ -242,3 +242,14 @@ Result: wlan0 + p2p0, NetworkManager scan OK.
    ENETUNREACH even for the subnet route). Nexthop backport in this 4.19 tree sets fc_gw_family=AF_INET for any
    RTA_GATEWAY; NM 1.46 sends RTA_GATEWAY 0.0.0.0. Kernel fix (upstream behaviour): only set family if gw != 0.
    Boot image v12 (kernel gc5b0caf59). Verified after reboot: auto-connect, default route, DNS, ping OK.
+
+### Audio (pulseaudio-modules-droid, HAL audio.primary.kona in-process) — speaker + mic working
+- Audio HAL no longer crash-loops (after vndservicemanager/binder fixes). ADSP online ("Q6 is Up").
+- Speaker playback OK (user heard it) even before any change: PA fell back to defaults because it could not parse MIUI's
+  `/vendor/etc/audio/audio_policy_configuration.xml` (parser stops at first unknown flag).
+- Mic: (1) unknown flags AUDIO_OUTPUT_FLAG_VIRTUAL_DEEP_BUFFER / AUDIO_INPUT_FLAG_INCALL_UPLINK_DOWNLINK /
+  AUDIO_INPUT_FLAG_VOIP_RECORD → drop those mixPorts; (2) primary output PCM_24_BIT_PACKED unsupported by droid sink →
+  declare PCM_16_BIT; (3) MIUI's "primary input" route lacks Built-In Mic → add Built-In Mic/Back Mic (else PA picks
+  FM tuner = digital silence). Script `apollo-sanitize-apc`, bind-mounted by `apollo-audio-policy.service`.
+- Open: ACDB init fails for voice cal (`msm_audio_ion_import: dma_buf_get failed`, cal type 4/5) → affects calls only?
+  32-bit effect libs not loadable (64-bit pulseaudio) — harmless. Wi-Fi debug logging (patch 0006) floods dmesg → limit to errors.

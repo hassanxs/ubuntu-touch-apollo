@@ -1,0 +1,40 @@
+#!/usr/bin/python3
+# apollo-sanitize-apc <src.xml> <dst.xml> [flag,flag,...]
+# Make MIUI's audio_policy_configuration.xml digestible for pulseaudio-modules-droid (API 30):
+#  - its parser stops at the first flag it doesn't know, losing every later mixPort (e.g. "primary input"),
+#    so drop mixPorts using such flags (and their routes);
+#  - drop the AUDIO_CHANNEL_IN_FRONT_BACK mask;
+#  - droid sinks only do 16-bit PCM: declare the primary output as PCM_16_BIT (the HAL plays 16-bit fine).
+import re, sys
+src, dst = sys.argv[1], sys.argv[2]
+DROP_FLAGS = sys.argv[3].split(',') if len(sys.argv) > 3 and sys.argv[3] else [
+    'AUDIO_OUTPUT_FLAG_VIRTUAL_DEEP_BUFFER',
+    'AUDIO_INPUT_FLAG_INCALL_UPLINK_DOWNLINK',
+    'AUDIO_INPUT_FLAG_VOIP_RECORD',
+]
+s = open(src).read()
+dropped = []
+
+
+def mixport(m):
+    block = m.group(0)
+    if any(f in block.split('>')[0] for f in DROP_FLAGS):
+        dropped.append(re.search(r'name="([^"]+)"', block).group(1))
+        return ''
+    return block
+
+
+s = re.sub(r'[ \t]*<mixPort\b[^>]*?(?:/>|>.*?</mixPort>)\n?', mixport, s, flags=re.S)
+for name in dropped:
+    s = re.sub(r'[ \t]*<route\b[^>]*sink="%s"[^>]*/>\n?' % re.escape(name), '', s)
+    s = re.sub(r'sources="([^"]*)"',
+               lambda m: 'sources="%s"' % ','.join(p for p in m.group(1).split(',') if p.strip() != name), s)
+s = re.sub(r'[ \t]*<route\b[^>]*sources=""[^>]*/>\n?', '', s)
+s = s.replace(',AUDIO_CHANNEL_IN_FRONT_BACK', '').replace('AUDIO_CHANNEL_IN_FRONT_BACK,', '')
+s = re.sub(r'(<mixPort name="primary output"[^>]*>\s*<profile[^>]*?format=")AUDIO_FORMAT_PCM_24_BIT_PACKED',
+           r'\g<1>AUDIO_FORMAT_PCM_16_BIT', s)
+# pulseaudio records only through "primary input", but MIUI routes the built-in mics to other mixPorts
+s = re.sub(r'(<route\b[^>]*sink="primary input"[^>]*sources=")(?!Built-In Mic)',
+           r'\g<1>Built-In Mic,Built-In Back Mic,', s)
+open(dst, 'w').write(s)
+print('dropped mixPorts:', dropped)

@@ -1,0 +1,14 @@
+[Unit]
+Description=Mi 10T: pulseaudio-droid compatible audio_policy_configuration.xml (bind-mount sanitized copy)
+After=lxc-android-config.service
+Before=lightdm.service
+ConditionPathExists=/android/vendor/etc/audio/audio_policy_configuration.xml
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+ExecStart=/bin/sh -c 'F=/android/vendor/etc/audio/audio_policy_configuration.xml; mkdir -p /run/apollo-audio && /usr/local/sbin/apollo-sanitize-apc $F /run/apollo-audio/audio_policy_configuration.xml && mount --bind /run/apollo-audio/audio_policy_configuration.xml $F'
+ExecStop=/bin/umount /android/vendor/etc/audio/audio_policy_configuration.xml
+
+[Install]
+WantedBy=multi-user.target
