@@ -241,3 +241,13 @@ Result: wlan0 + p2p0, NetworkManager scan OK.
   AudioFlinger bridge, Bluetooth, coprocessors ONLINE.
 - 2026-10-11: removed persist.vendor.camera.clientname (leftover experiment) → camera photo (back/front) + video
   still work after reboot: the Xiaomi cam_sensor kernel patch alone fixes the camera; nothing needed in the image.
+
+### 2026-10-11 — Vibration (parked)
+- aw8697 probes, f0 calibrated (170.6 Hz), input3 FF device present, hfd-service running.
+- Waveform RAM was EMPTY after boot: the driver requests aw8697_haptic.bin 5 s after probe (built-in driver,
+  /vendor not mounted yet) and does not retry. `echo 1 > .../2-005a/ram_update` loads it (ram attr then shows data).
+- Even with RAM loaded, no vibration felt via sysfs (activate_mode=3 RAM loop, duration+activate) nor via
+  hfd (com.lomiri.hfd.Vibrator.vibrate). Next: register dump during play, check boost/enable GPIO, compare with
+  the LineageOS vibrator HAL path. Parked to work on other features first.
+- AppArmor: the 4.14 Halium patch set only adds Ubuntu SAUCE socket/af_unix mediation (more restrictive);
+  not a cause of missing features. Deferred as hardening.
