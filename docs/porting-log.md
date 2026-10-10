@@ -239,3 +239,5 @@ Result: wlan0 + p2p0, NetworkManager scan OK.
 - Flashing tip: copy rootfs.img to a Windows-local dir before `fastboot flash system` (134 s vs 632 s over \wsl$).
 - Verified after clean boot: overlay (11 mounts), container hook, Lomiri, Wi-Fi, Onic+IMS, audio devices,
   AudioFlinger bridge, Bluetooth, coprocessors ONLINE.
+- 2026-10-11: removed persist.vendor.camera.clientname (leftover experiment) → camera photo (back/front) + video
+  still work after reboot: the Xiaomi cam_sensor kernel patch alone fixes the camera; nothing needed in the image.
