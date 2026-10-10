@@ -298,3 +298,15 @@ Result: wlan0 + p2p0, NetworkManager scan OK.
   Fix: bluebinder drop-in also waits for vendor.radio.qcril_pre_init_lock_held=0 (qcril QMI pre-init done,
   max 90 s). Verified across a reboot with a copy in /etc/systemd/system/bluebinder.service.d/ (writable path;
   delete it after flashing the next image, the overlay has the same file).
+
+### 2026-10-11 — GPS (partial)
+- gnss_service + loc_launcher run in the container; lomiri-location-serviced (gps::Provider) works.
+  test_gps only knows the legacy hw module ("GPS interface not found") — use
+  `lomiri-location-serviced-cli --bus system --test` (prints space vehicles / positions).
+- By a window: 9 satellites in 90 s, 15 in 5 min (SNR ~40), ephemeris for 3, no fix yet.
+- XTRA/NTP assistance fails: LocSvc_xtra2 "DNS resolution on 0.cn.pool.ntp.org failed" (container process,
+  no Android netd/dnsproxyd) and the hybris GNSS wrapper "Unable to initialize GNSS Xtra interface".
+  TODO: outdoor fix test; DNS for container daemons (XTRA) to speed up first fix.
+- Seen in passing: Camera app SIGSEGV on close (photos fine), one PulseAudio SIGTRAP at 03:03 — watch.
+- CamX log volume (~90% of logcat during camera use) is not controlled by camxoverridesettings.txt
+  (overrideLogLevels/logInfoMask=0 had no effect); dropped.
