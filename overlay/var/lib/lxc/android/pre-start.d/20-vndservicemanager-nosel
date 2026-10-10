@@ -2,6 +2,7 @@
 # Mi 10T (apollo): bind-mount replacements over vendor binaries before the Android container starts.
 #  - vndservicemanager.nosel: MIUI's vndservicemanager aborts when SELinux is not active (patch-vsm.py)
 #  - audio-hal-stub: keep the container's audio HAL from fighting pulseaudio's HAL over ACDB calibration
+#  - storaged: crash-loops (bad_alloc in uid_monitor::get_uid_io_stats_locked), not used on UT -> idle stub
 R=/var/lib/lxc/android/rootfs
 O=/var/lib/lxc/android/overrides
 bind() {
@@ -11,4 +12,5 @@ bind() {
 }
 bind $O/vndservicemanager.nosel $R/vendor/bin/vndservicemanager
 bind $O/audio-hal-stub $R/vendor/bin/hw/android.hardware.audio.service
+bind $O/audio-hal-stub $R/system/bin/storaged
 exit 0

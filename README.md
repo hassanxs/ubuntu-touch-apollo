@@ -1,6 +1,6 @@
 # Ubuntu Touch for Xiaomi Mi 10T (apollo) — WORK IN PROGRESS
 
-> **Status: WIP / experimental.** Boots to the Lomiri home screen; Wi-Fi, mobile data, calls (ringtone + two-way audio), speaker and mic work. Many things don't yet.
+> **Status: WIP / experimental.** Boots to the Lomiri home screen; Wi-Fi, mobile data, calls, SMS, audio, Bluetooth, camera (photo + video) and flashlight work. Many things don't yet.
 > Not ready for daily use. Flashing replaces Android on the device.
 
 | | |
@@ -35,7 +35,7 @@
 | Outgoing calls | ❓ | not tested yet |
 | Bluetooth (on, scan) | ✅ | bluebinder wait fix + CONFIG_BT_HCIVHCI; pairing/audio not tested |
 | Camera: photos (back + front) | ✅ | Xiaomi sensor driver close fix + firmware path fix (kernel) |
-| Camera: video recording | ❌ | app hangs after stopping |
+| Camera: video recording (with sound) | ✅ | libgbinder ApiLevel=32 so the AudioFlinger bridge registers |
 | Video decode (venus) | ❓ | venus now ONLINE; playback not tested |
 | Stability | ⚠️ | killing PulseAudio during recording panics the kernel (ADSP SMMU fault) |
 | Flashlight | ✅ | Xiaomi `flashlight` LED via device-info |

@@ -319,3 +319,9 @@ Result: wlan0 + p2p0, NetworkManager scan OK.
   3. Also set persist.vendor.camera.clientname=com.android.camera (container prop, persistent in /data/property);
      probably not required after (2) — re-test before relying on it.
 - Video recording: starts, app hangs after stop (TODO).
+- Video recording WORKS (4K/H.264 + audio, user confirmed, played back in gallery). Recorder hung creating its
+  AudioSource: audiosystem-passthrough-af could not register media.audio_flinger ("Failed to add ... -2147483647")
+  because libgbinder defaulted to the Android 8-10 AIDL protocol. Fix: /etc/gbinder.d/50-apollo.conf ApiLevel=32.
+  Verified oFono (IMS) + bluebinder still OK after restart.
+- storaged crash-looped (bad_alloc in uid_monitor) → idle stub via pre-start hook.
+- TODO: MIUI camxoverridesettings enables verbose CamX logging (logInfoMask/overrideLogLevels) → floods logcat.

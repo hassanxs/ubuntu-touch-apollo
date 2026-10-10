@@ -9,5 +9,5 @@ Copy into the Ubuntu Touch rootfs. Things git on Windows can't store as real sym
   `/vendor/bin/vndservicemanager` (MIUI V14.0.4.0, sha256 `a6ad7a43…`). Not committed (proprietary binary).
   It is bind-mounted by `var/lib/lxc/android/pre-start.d/20-vndservicemanager-nosel`, run from
   `etc/systemd/system/lxc-android-config.service.d/10-vndservicemanager-nosel.conf`.
-- `audio-hal-stub` is also bind-mounted (over `/vendor/bin/hw/android.hardware.audio.service`) by the same hook.
+- `audio-hal-stub` is also bind-mounted over `/system/bin/storaged` (crash loop) and (over `/vendor/bin/hw/android.hardware.audio.service`) by the same hook.
 - AccountsService `DemoEdges2=false` was set on the test device to skip the edge tutorial (optional).
