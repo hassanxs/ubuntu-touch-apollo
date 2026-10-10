@@ -1,6 +1,6 @@
 # Ubuntu Touch for Xiaomi Mi 10T (apollo) — WORK IN PROGRESS
 
-> **Status: WIP / experimental.** Boots to the Lomiri home screen; Wi-Fi + internet, speaker and mic work. Many things don't yet.
+> **Status: WIP / experimental.** Boots to the Lomiri home screen; Wi-Fi, mobile data, calls (ringtone + two-way audio), speaker and mic work. Many things don't yet.
 > Not ready for daily use. Flashing replaces Android on the device.
 
 | | |
@@ -29,7 +29,7 @@
 | Modem / SIM detection, network registration | ✅ | oFono binder plugin (`binder.conf`, `apollo.yaml`) |
 | Mobile data (LTE) | ✅ | tested with Onic/Ufone (APN auto-provisioned) |
 | Voice calls (incoming, two-way audio) | ✅ | needs `ril_subscription.conf` (IQcRilAudio bridge) + container audio HAL stubbed |
-| Ringtone on incoming call | ❌ | call screen appears, no ring sound |
+| Ringtone on incoming call | ✅ | media-hub needed AppArmor SO_PEERSEC for unix sockets (kernel patch) |
 | SMS, outgoing calls | ❓ | not tested yet |
 | Bluetooth | ❌ | not tested |
 | Camera, video decode (venus) | ❌ | venus firmware load fails |
@@ -54,6 +54,7 @@
 4. **Lomiri crash loop** — `/dev/kgsl-3d0` root-only → udev rules generated from `ueventd.rc` (`overlay/etc/udev/rules.d/70-apollo.rules`).
 5. **Edge swipes** — Novatek grip filter → `mi-touch-mode 7 1` + re-apply on resume (patch 0005).
 6. **Wi-Fi** — firmware path (`/usr/lib/firmware -> /vendor/firmware_mnt/image`), ini path (patch 0007), driver ON at boot.
+10. **Ringtone / media-hub** — AppArmor reported no peer label on unix sockets → media-hub aborted (kernel patch).
 9. **Calls** — IQcRilAudio bridge config, container audio HAL stubbed (it broke ACDB calibration for PulseAudio's HAL).
 8. **Audio** — PulseAudio couldn't parse MIUI's audio policy (unknown flags, 24-bit primary output, mics not routed to "primary input") → `apollo-sanitize-apc`.
 7. **No IPv4 routes from NetworkManager** — kernel treated RTA_GATEWAY 0.0.0.0 as a real gateway (patch 0008).
@@ -62,7 +63,7 @@
 
 1. Apply `kernel-patches/` to LineageOS `android_kernel_xiaomi_sm8250` (lineage-23.2 @ `71b13e62f`), branch `halium-23.2`.
 2. Build with UBports `halium-generic-adaptation-build-tools` using `deviceinfo` (`tools/build-apollon.sh`).
-3. Boot image currently = build-tools boot.img kernel + ramdisk overlay that archives pstore (`tools/make-v3-logsave.sh`, `make-v6.sh`, `make-v13.sh`).
+3. Boot image currently = build-tools boot.img kernel + ramdisk overlay that archives pstore (`tools/make-v3-logsave.sh`, `make-v6.sh`, `make-v17.sh`).
 4. System: Halium 12 GSI + VNDK v30 APEX extracted from MIUI `system_ext` (see porting log), `system` partition grown to 6 GiB.
 
 Not yet a reproducible one-command build — the overlay still has to be folded into the image.

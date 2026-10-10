@@ -283,3 +283,10 @@ Result: wlan0 + p2p0, NetworkManager scan OK.
   3. With working ACDB, MIUI default fluence (voice-dmic-ef) is required for uplink (handset-mic path is 2-ch in
      MIUI overlay). persist.vendor.audio.fluence.* back to true. → two-way call audio OK (user confirmed).
 - Kernel debug commits (msm_audio_ion fd logging, audio_calibration ALLOCATE logging) are in v15 — drop before release.
+- Ringtone: lomiri-telephony-service-approver plays it via media-hub; media-hub-server aborted
+  ("apparmor::Context cannot be created for empty name") because getsockopt(SO_PEERSEC) on unix sockets gave
+  ENOPROTOOPT (mainline 4.19 AppArmor has no af_unix peer labels; Ubuntu kernels carry SAUCE patches).
+  Kernel fix: fall back to the peer cred label (patch "apparmor: report the peer cred label for unix sockets").
+  User confirmed: ringtone + two-way audio.
+- v17 (kernel g0737b3a0f): clean (debug commits dropped). Verified after reboot: SO_PEERSEC=unconfined, audio-hal
+  stub bound, ACDB init done, no dma_buf errors, Wi-Fi, Onic registered, qti bridge + media-hub active.
