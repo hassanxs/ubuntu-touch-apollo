@@ -30,9 +30,12 @@
 | Mobile data (LTE) | ✅ | tested with Onic/Ufone (APN auto-provisioned) |
 | Voice calls (incoming, two-way audio) | ✅ | needs `ril_subscription.conf` (IQcRilAudio bridge) + container audio HAL stubbed |
 | Ringtone on incoming call | ✅ | media-hub needed AppArmor SO_PEERSEC for unix sockets (kernel patch) |
-| SMS, outgoing calls | ❓ | not tested yet |
-| Bluetooth | ❌ | not tested |
-| Camera, video decode (venus) | ❌ | venus firmware load fails |
+| SMS send / receive | ✅ | incoming SMS arrive over IMS → `extPlugin=qti` in `binder.conf` |
+| VoLTE (IMS) | ✅ | via ofono-binder-plugin-ext-qti |
+| Outgoing calls | ❓ | not tested yet |
+| Bluetooth | ❌ | turns on then off by itself, no scan results |
+| Camera | ❌ | camera app crashes |
+| Video decode (venus) | ❌ | venus firmware load fails |
 | Stability | ⚠️ | killing PulseAudio during recording panics the kernel (ADSP SMMU fault) |
 | Fingerprint, NFC, vibration, flashlight | ❓ | not tested |
 | Suspend / screen-off power | ❓ | screen off/on works |

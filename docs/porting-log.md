@@ -290,3 +290,8 @@ Result: wlan0 + p2p0, NetworkManager scan OK.
   User confirmed: ringtone + two-way audio.
 - v17 (kernel g0737b3a0f): clean (debug commits dropped). Verified after reboot: SO_PEERSEC=unconfined, audio-hal
   stub bound, ACDB init done, no dma_buf errors, Wi-Fi, Onic registered, qti bridge + media-hub active.
+- SMS: outgoing OK; incoming lost once the modem registered on IMS by itself (first Ufone SMS right after SIM
+  insert arrived via SGs). oFono IMS Registration=disabled can't deregister the modem. Fix: binder.conf
+  `extPlugin=qti` (ofono-binder-plugin-ext-qti → vendor.qti.hardware.radio.ims IImsRadio/imsradioN). Then IMS
+  Registered/VoiceCapable/SmsCapable=true → incoming SMS received + VoLTE calls still OK (user confirmed).
+  ext plugin hex-dumps every transaction (~460 lines/min) → ofono drop-in Environment=GUTIL_LOG_DEFAULT=warning.
