@@ -33,7 +33,8 @@
 | SMS send / receive | ✅ | incoming SMS arrive over IMS → `extPlugin=qti` in `binder.conf` |
 | VoLTE (IMS) | ✅ | via ofono-binder-plugin-ext-qti |
 | Outgoing calls | ❓ | not tested yet |
-| Bluetooth (on, scan, pairing) | ✅ | bluebinder wait fix + CONFIG_BT_HCIVHCI; paired with a laptop; BT audio not tested |
+| Bluetooth (on, scan, pairing) | ✅ | bluebinder wait fix + CONFIG_BT_HCIVHCI; paired with a laptop |
+| Bluetooth audio (A2DP) | ✅ | dual-mode buds: Settings may pair only the LE side; pair the classic (BR/EDR) side, see porting log |
 | Camera: photos (back + front) | ✅ | Xiaomi sensor driver close fix + firmware path fix (kernel) |
 | Camera: video recording (with sound) | ✅ | libgbinder ApiLevel=32 so the AudioFlinger bridge registers |
 | Video playback (venus) | ✅ | gallery playback OK |

@@ -325,3 +325,7 @@ Result: wlan0 + p2p0, NetworkManager scan OK.
   Verified oFono (IMS) + bluebinder still OK after restart.
 - storaged crash-looped (bad_alloc in uid_monitor) → idle stub via pre-start hook.
 - TODO: MIUI camxoverridesettings enables verbose CamX logging (logInfoMask/overrideLogLevels) → floods logcat.
+- Bluetooth audio WORKS (A2DP to "Wave ANC" buds, user confirmed). Pairing from Settings only bonded the buds' LE
+  companion channel (UUID 0xae00, adv flags 0x06 = BR/EDR not supported); the classic BR/EDR side has another
+  address (embedded in the LE manufacturer data). Paired it via bluetoothctl (`transport bredr` scan) → A2DP sink.
+  Known issue: dual-mode buds may need classic pairing; Settings UI pairs the LE identity.
