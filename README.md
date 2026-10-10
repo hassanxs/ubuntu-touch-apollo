@@ -65,11 +65,13 @@
 8. **Audio** — PulseAudio couldn't parse MIUI's audio policy (unknown flags, 24-bit primary output, mics not routed to "primary input") → `apollo-sanitize-apc`.
 7. **No IPv4 routes from NetworkManager** — kernel treated RTA_GATEWAY 0.0.0.0 as a real gateway (patch 0008).
 
-## Building (outline)
+## Building
 
-1. Apply `kernel-patches/` to LineageOS `android_kernel_xiaomi_sm8250` (lineage-23.2 @ `71b13e62f`), branch `halium-23.2`.
-2. Build with UBports `halium-generic-adaptation-build-tools` using `deviceinfo` (`tools/build-apollon.sh`).
-3. Boot image currently = build-tools boot.img kernel + ramdisk overlay that archives pstore (`tools/make-v3-logsave.sh`, `make-v6.sh`, `make-v21.sh`).
-4. System: Halium 12 GSI + VNDK v30 APEX extracted from MIUI `system_ext` (see porting log), `system` partition grown to 6 GiB.
+Follows the UBports porting guide (standalone kernel + Halium 12 GSI, `deviceinfo_use_overlaystore`).
 
-Not yet a reproducible one-command build — the overlay still has to be folded into the image.
+1. Kernel: LineageOS `android_kernel_xiaomi_sm8250` (lineage-23.2 @ `71b13e62f`) + `kernel-patches/`, branch `halium-23.2`.
+   `deviceinfo_kernel_defconfig` = LineageOS' own fragments + `halium.config` (the Ubuntu Touch options, patch in the series).
+2. `tools/build-image.sh` stages `overlay/`, runs the build tools (`build.sh`, `prepare-fake-ota.sh`,
+   `system-image-from-ota.sh`) and adds the VNDK v30 APEX (extracted from MIUI V14.0.4.0 `system_ext` with
+   `tools/extract-vndk30.sh` + `tools/flatten-vndk30.sh`; proprietary, not in this repo) to the Halium `android-rootfs.img`.
+3. Output: `boot.img` (boot partition) and `rootfs.img` (system partition, grown to 6 GiB in `super`).

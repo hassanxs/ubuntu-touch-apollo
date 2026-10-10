@@ -8,4 +8,4 @@ sudo insmod ~/wsl-kmod/out/cdc_ether.ko && sudo insmod ~/wsl-kmod/out/rndis_host
 lsmod | grep -E 'rndis_host|cdc_ether|usbnet'
 echo 1-1:1.0 | sudo tee /sys/bus/usb/drivers_probe >/dev/null 2>&1
 sleep 2; sudo dmesg | tail -6
-bash /mnt/c/Users/Hassan/Projects/ubuntu-touch-guacamole/wsl-phone-net.sh
+bash $(cd "$(dirname "$0")" && pwd)/wsl-phone-net.sh

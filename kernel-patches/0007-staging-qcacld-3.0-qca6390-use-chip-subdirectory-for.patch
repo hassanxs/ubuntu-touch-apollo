@@ -1,7 +1,7 @@
 From 922e7aecbe26feb8abfda5175e6c4831d4e4f02b Mon Sep 17 00:00:00 2001
 From: Hassan <hafizhassanlatif@gmail.com>
 Date: Sat, 10 Oct 2026 17:11:27 +0500
-Subject: [PATCH 07/13] staging: qcacld-3.0: qca6390: use chip subdirectory for
+Subject: [PATCH 07/15] staging: qcacld-3.0: qca6390: use chip subdirectory for
  ini/mac files
 
 The built-in driver looked for wlan/qca_cld/WCNSS_qcom_cfg.ini, which is a

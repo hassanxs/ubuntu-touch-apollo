@@ -1,16 +1,29 @@
 #!/bin/sh
-# Mi 10T (apollo): bind-mount replacements over vendor binaries before the Android container starts.
-#  - vndservicemanager.nosel: MIUI's vndservicemanager aborts when SELinux is not active (patch-vsm.py)
-#  - audio-hal-stub: keep the container's audio HAL from fighting pulseaudio's HAL over ACDB calibration
-#  - storaged: crash-loops (bad_alloc in uid_monitor::get_uid_io_stats_locked), not used on UT -> idle stub
+# Mi 10T (apollo): bind-mount replacements over Android binaries before the container starts.
+# Runs as ExecStartPre of lxc-android-config.service (pre-start.d hooks only run when the
+# Android rootfs is writable, which it is not here).
+#  - vndservicemanager: MIUI's binary aborts when SELinux is not active; a patched copy
+#    (SELinux CHECKs skipped, access checks allow) is generated at boot from the device's own
+#    vendor binary with /usr/local/sbin/apollo-patch-vsm (no proprietary binary is shipped).
+#  - audio-hal-stub over the container's audio HAL: it would register ACDB calibration with its
+#    own fds first and break the calibration of the HAL running inside pulseaudio.
+#  - audio-hal-stub over storaged: crash-loops (bad_alloc in uid_monitor), unused on Ubuntu Touch.
 R=/var/lib/lxc/android/rootfs
 O=/var/lib/lxc/android/overrides
+RUN=/run/apollo
+
 bind() {
     if [ -f "$1" ] && [ -f "$2" ] && ! grep -q " $2 " /proc/mounts; then
         mount -o bind "$1" "$2"
     fi
 }
-bind $O/vndservicemanager.nosel $R/vendor/bin/vndservicemanager
+
+mkdir -p $RUN
+VSM=$RUN/vndservicemanager.nosel
+if [ ! -f $VSM ] && ! grep -q " $R/vendor/bin/vndservicemanager " /proc/mounts; then
+    /usr/bin/python3 /usr/local/sbin/apollo-patch-vsm $R/vendor/bin/vndservicemanager $VSM && chmod 755 $VSM
+fi
+bind $VSM $R/vendor/bin/vndservicemanager
 bind $O/audio-hal-stub $R/vendor/bin/hw/android.hardware.audio.service
 bind $O/audio-hal-stub $R/system/bin/storaged
 exit 0

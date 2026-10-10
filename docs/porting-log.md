@@ -1,127 +1,25 @@
-# Ubuntu Touch port — OnePlus 7 Pro (guacamole)
+# Ubuntu Touch port — Xiaomi Mi 10T (apollo) — porting log
+
+Chronological working notes: every problem met while bringing up Ubuntu Touch (Halium 12) on the Mi 10T
+and how it was fixed. The README has the current status; this file is the detailed history.
 
 ## Device
-- Model: GM1910 (China variant)
-- Build: GM1910_11_H.41
-- Android: 12
-- Kernel: 4.14.180-perf+
-- HW ver: GM1910_11
-- SoC: Snapdragon 855 (sm8150)
-- Bootloader: unknown (check over fastboot)
+- Xiaomi Mi 10T, M2007J3SY, codename `apollo` (LineageOS: `apollon`)
+- Snapdragon 865 (SM8250, kona), external X55 modem (MHI)
+- Stock: MIUI 14 V14.0.4.0.SJDMIXM, Android 12, security patch 2023-06-01, first API 29
+- A-only, dynamic partitions (`super`), separate `recovery` partition, boot header v2, page size 4096
 
 ## Target
-- Halium 12 generic approach (halium-generic-adaptation-build-tools)
-- Keep stock Android 12 vendor/firmware
+- Halium 12 GSI + Ubuntu Touch 24.04-2.x, UBports halium-generic-adaptation-build-tools (standalone kernel)
+- Kernel: LineageOS `android_kernel_xiaomi_sm8250` lineage-23.2 (4.19.325) + Ubuntu Touch patches
+- Stock MIUI vendor/firmware kept
 
 ## Build host
-- Windows 11, Xeon E-2126G (6c), 64 GB RAM
-- WSL2 Ubuntu-22.04 — sources live in WSL ext4 (~/ut-guacamole), outputs copied here
+- Windows 11 + WSL2 Ubuntu 22.04 (sources in WSL ext4 under `~/ut-apollon`)
+- Phone access: USB RNDIS (usbipd-win → WSL for the initrd debug shell), SSH over USB or Wi-Fi
 
 ## Log
-- 2026-09-27: project folder created, environment check done
-- 2026-09-27: platform-tools installed (winget). Cloned into WSL ~/ut-guacamole:
-  build-tools (halium-generic-adaptation-build-tools main), kernel (LineageOS
-  android_kernel_oneplus_sm8150 lineage-19.1), ref device trees (guacamole, sm8150-common).
-- 2026-09-27: kernel branch `halium-12` — check-kernel-config -w (275 fixes) + binder
-  devices, RNDIS, pstore. Commit b0b4bfea9.
-- 2026-09-27: port repo ~/ut-guacamole/port (deviceinfo, build -> ../build-tools).
-  Facts: A/B, NO dynamic partitions, boot hdr v2, pagesize 4096, boot 96 MiB,
-  system 3.39 GiB, separate dtbo (keep stock), no recovery partition.
-- 2026-09-27: phone over adb: serial <redacted>, patch 2022-12-05, active slot _a,
-  bootloader LOCKED, oem_unlock_allowed=1. USB: must be in File transfer mode for ADB.
-- 2026-09-27: build #1 failed at prepare-compiler-check. Cause: OnePlus Makefile adds
-  --param=allow-store-data-races=0; clang-12 + -Werror in cc-option => all probes fail.
-  Fixed (kernel commit 6ad60c66f, GCC-only). Rebuild started.
-- 2026-09-27: build #2/#3: prepare-compiler-check still failed via build.sh — cause was
-  WSL-inherited Windows PATH. make-kernel.sh uses a clean Linux PATH.
-  Build #3 failed at dtbo (in-tree dtc can't parse OnePlus overlays, dts/18821/pm8150.dtsi).
-  Build #4 with DTC_EXT (Android dtc 1.4.2) => SUCCESS: KERNEL_OBJ/arch/arm64/boot/Image-dtb (62 MB).
-  Board dts dir = arch/arm64/boot/dts/18821 (matches ro.boot.prj_version=18821).
-- 2026-09-27: UNLOCK BLOCKED. `fastboot flashing unlock` and `fastboot oem unlock` both =>
-  "Device cannot be unlocked for technical reason." even with sys.oem_unlock_allowed=1.
-  Known OnePlus bug on Android 12 (OOS/H2OS 12) for 7 Pro. Fix: roll back to Android 11,
-  unlock there, then (optionally) upgrade back to 12 via local upgrade (stays unlocked).
-- 2026-09-27: downgrade route = Local upgrade. Files in firmware/:
-  - OnePlus7ProOxygen_21.E.41_OTA_0410_all_2112101752_downgrade_3821c2d4496c48fc.zip
-    (EU OOS11 rollback, official s3.amazonaws.com/oxygenos.oneplus.net, 2,501,876,884 bytes)
-  - OPLocalUpdate_For_Android12.apk (AndroidFileHost fid <redacted>;
-    official oxygenos.oneplus.net link is 403). sha256 57751a3b…81001c.
-    Signed by Oplus platform cert SHA256 FC:98:DA:E6…43:86 == phone's framework-res.apk cert.
-  - Phone's own updater com.oplus.ota 3.14.16 has no local-install activity.
-- 2026-09-27: rolled back to OOS11 (GM1910_21_211210, 2021-12) via Local install; now slot _b.
-  `fastboot flashing unlock` => OK. flash.locked=0, verifiedbootstate=orange. UNLOCKED.
-- 2026-09-27: booted TWRP 3.6.2_11-0 from RAM; dd backups in firmware/backup/ (SHA256SUMS):
-  modemst1/2, fsg (all-zero, normal), fsc, persist, devinfo, boot/dtbo/vbmeta/vendor a+b.
-- 2026-09-27: phone updating via OTA: 11.0.9.1 GM21BA (EU) next, then OOS12.
-- 2026-09-27: build.sh failures explained: deviceinfo_kernel_arch="arm64" => toolchain prefix
-  arm64-linux-android- (doesn't exist) => every cc-option failed. Removed (defaults aarch64).
-  disable_modules=true breaks overlaystore touch => set false.
-  Stock boot_b: plain Image (no OnePlus hdr), dtb in hdr v2 field -> kernel_image_name=Image,
-  deviceinfo_dtb = 20 dtbs (18865,18821,19801,18857,19863 x 4). out/boot.img built.
-- 2026-09-27: phone now OOS12 GM1910_11_H.40 on slot _b (Android 12 vendor). Slot _a = UT slot:
-  system_a = UT rootfs (flashed w/ `fastboot -S 256M`; default chunking failed w/ USB error),
-  boot_a = out/boot.img, dtbo_a = out/dtbo.img (built from kernel *.dtbo), vbmeta_a = flags=2.
-  vendor_a/firmware on slot a = OOS 11.0.9.1 (Android 11) — needs A12 later.
-- 2026-09-27: FIRST BOOTS: UT kernel starts (USB drops) then resets to fastboot within ~10 s,
-  on both slot b (stock OOS12 dtbo) and slot a (our dtbo). ro.boot.bootreason=bootloader.
-  Bootloader auto-falls back to slot b => Android 12 OK. TWRP 3.6.2_11 and 3.7.1_12 also
-  bounce to fastboot on the OOS12 slot. pstore ramoops exists (0xA9800000) but needs root to read;
-  no SYSTEM_LAST_KMSG in dropbox.
-  Recovery if stuck on slot a: fastboot set_active b.
-- 2026-09-27: bisect: building boot-stocktest.img = same source, ORIGINAL lineage defconfig.
-- 2026-09-28: KEY FINDINGS
-  * `fastboot boot` (RAM) is unreliable on the OOS12 ABL: TWRP 3.7.1_12 and official LOS 23.2
-    recovery both bounce to fastboot that way. Invalidates earlier RAM-boot tests.
-  * Normal boot of slot a stops in fastboot (retry count untouched) — SAR device; ABL adds
-    skip_initramfs etc. on normal boot. Boot via "Recovery mode" (fastboot menu or
-    `fastboot reboot recovery`) boots boot_a with its ramdisk.
-  * Official LOS 23.2 (20260921) boot.img flashed to boot_a + LOS dtbo_a, recovery mode => WORKS
-    (root adb). Kernel 4.14.357-openela g0521dc291. LOS kernel has no PSTORE, no /dev/mem.
-  * Our lineage-19.1 Halium kernel, flashed + recovery mode + own dtbo => crashes ~10 s.
-- 2026-09-28: PIVOT to lineage-23.2 kernel (~/ut-guacamole/kernel-23.2, branch halium-23.2):
-  merged sm8150-perf_defconfig + oplus.config + oplus_non_dynamic.config -> vendor/halium_guacamole_defconfig,
-  check-kernel-config -w, binder/RNDIS/pstore, CONFIG_INITRAMFS_IGNORE_SKIP_FLAG=y.
-  LLVM=1 + lld, clang r510928. DTB = prebuilt from LOS boot.img (lineage-23.2.dtb).
-  dtbo_a should be official LOS 23.2 dtbo.img.
-- 2026-09-28: 23.2 Halium kernel built OK (needed DTC_EXT=/usr/bin/dtc 1.6.1 and
-  KCFLAGS=-Wno-error=fortify-source for qcacld; kernel src symlink kernel-lineage23 because
-  setup_repositories strips text after the last dot). out/boot-2332.img, out/boot-2332-debug.img.
-  TEST: boot_a=boot-2332-debug + LOS dtbo_a, reboot recovery => NO crash, but HANGS on the
-  unlocked-warning screen, no USB at all (no RNDIS) for 6+ min.
-  !! STUCK: slot a active + INITRAMFS_IGNORE_SKIP_FLAG => every boot (normal or recovery) runs the
-  hanging kernel. Power+VolUp restarts (Qualcomm logo, vibrate) but lands on slot a again; holding
-  VolUp / "press power to pause boot" did not reach fastboot; slot retry fallback did NOT trigger.
-  Escape options: other key combos, or drain battery then VolUp+Power while plugging USB.
-  LESSON: never leave a possibly-hanging image on the ACTIVE slot. Test only images with an escape
-  (e.g. LOS recovery ramdisk hybrid), and set_active b right after flashing where possible.
-  Prepared: out/boot-hybrid-ourkernel-losramdisk.img (our 23.2 kernel + LOS recovery ramdisk + LOS
-  dtb/cmdline) to get root adb + /sys/fs/pstore from our kernel.
-- 2026-09-28: DISCOVERY: the "hang" was NOT a hang. After a cable replug Windows showed
-  USB\VID_18D1&PID_D001\HALIUM_INITRD_DEBUG_TELNET_ON_PORT_23_ON_RNDIS0_192.168.2.15 — i.e. our
-  lineage-23.2 Halium kernel + halium initrd BOOT FINE (display just stays on the bootloader's
-  last frame). Windows bound it to "Android ADB Recovery Interface"; needs manual driver switch to
-  Microsoft "Remote NDIS Compatible Device" to reach telnet 192.168.2.15:23.
-  => Kernel side WORKS. Next port attempt: boot-2332.img (real systempart) + fix RNDIS driver.
-- 2026-09-28: user chose to restore stock via MSM (EDL). Package E:\MSM (from
-  onepluscommunityserver.com EU_GM21BA/R): guacamole_21_E.01_211210.ops (MD5 9064dc53…106a OK,
-  build_path SM8150/18821_R/.../OXYGEN_EU), OOS 11.0.5.1 GM21BA. Used "MsmDownloadTool V4.0.exe"
-  (reports V5.1.70); the _factory.exe was flagged by Defender (VirTool:Win32/VMProtect) — not used.
-  9008 driver: Microsoft Update Catalog "Qualcomm HS-USB QDLoader 9008" (Win10+), cab signed by
-  Microsoft, .cat signed by MS Hardware Compatibility Publisher -> firmware/qdloader9008-driver/.
-  (A separately-sourced Qualcomm installer failed with Code 52 — removed.)
-  MSM Upgrade mode => Download Complete in 315 s. Phone now stock OOS11 EU, wiped, relocked.
-  To resume porting: OOS11 => `fastboot flashing unlock` works directly (unlock bug is A12 only).
-- 2026-09-28: 7 Pro restored OK (IMEI shows). User switching target device (7 Pro buttons loose)
-  to OnePlus 7T Pro 5G McLaren HD1925 (T-Mobile), codename hotdogg / OnePlus7TProNR:
-  serial <redacted>, OOS12 HD1925_11_F.05 (2023-08), patch 2022-12-05, ro.boot.prj_version=19861,
-  slot _b, dynamic partitions (super + vbmeta_system), separate recovery_a/b, locked,
-  sys.oem_unlock_allowed=1. Kernel-23.2 drivers reference 19861 but no dts/19861 dir -> use stock DTB.
-  No official LOS for hotdogg (hotdog/hotdogb are official).
-  `fastboot oem get_unlock_code`: PCBA <redacted>,
-  code <redacted>
-  -> request token at https://www.oneplus.com/us/unlock_token (~1 week). Then:
-     fastboot flash cust-unlock unlock_code.bin ; fastboot oem unlock
-- 2026-10-10: OnePlus never sent the 7T Pro 5G token -> dropped. New target: Xiaomi Mi 10T
+- 2026-10-10: Target: Xiaomi Mi 10T
   M2007J3SY (apollo; LOS official "apollon", builds 2026-10-03). adb serial <redacted> (also on
   wifi adb 10.0.0.218:5555 -> use `adb -s <serial>`). MIUI 14 V14.0.4.0.SJDMIXM, Android 12,
   patch 2023-06-01, kernel 4.19.157, first_api 29, A-only (no slot suffix), dynamic super,

@@ -1,7 +1,7 @@
 From 81ec3e46d9c2b5b42bb5859107d05fbaee26b766 Mon Sep 17 00:00:00 2001
 From: Hassan <hafizhassanlatif@gmail.com>
 Date: Sat, 10 Oct 2026 21:11:49 +0500
-Subject: [PATCH 12/13] firmware_loader: also search /vendor/firmware_mnt/image
+Subject: [PATCH 12/15] firmware_loader: also search /vendor/firmware_mnt/image
 
 Venus (video) and CVP firmware are requested from the Android container,
 whose mount namespace has no /lib/firmware; firmware_class.path can only

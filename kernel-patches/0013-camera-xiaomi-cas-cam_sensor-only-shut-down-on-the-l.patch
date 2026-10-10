@@ -1,7 +1,7 @@
 From f0980ca26e1f91b8f001a675c45da04274d6599c Mon Sep 17 00:00:00 2001
 From: Hassan <hafizhassanlatif@gmail.com>
 Date: Sat, 10 Oct 2026 21:55:42 +0500
-Subject: [PATCH 13/13] camera-xiaomi-cas: cam_sensor: only shut down on the
+Subject: [PATCH 13/15] camera-xiaomi-cas: cam_sensor: only shut down on the
  last subdev close
 
 The Xiaomi sensor driver calls cam_sensor_shutdown() on every close of the

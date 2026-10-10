@@ -11,7 +11,7 @@ deviceinfo_ubuntu_touch_release="24.04-2.x"
 # LOS 23.2 apollon 20261003) + halium_apollo_defconfig on branch halium-23.2.
 deviceinfo_kernel_source="file:///home/hsn/ut-apollon/kernel-src"
 deviceinfo_kernel_source_branch="halium-23.2"
-deviceinfo_kernel_defconfig="vendor/halium_apollo_defconfig"
+deviceinfo_kernel_defconfig="vendor/kona-perf_defconfig vendor/debugfs.config vendor/xiaomi/sm8250-common.config vendor/xiaomi/apollo.config halium.config"
 deviceinfo_kernel_clang_compile="true"
 deviceinfo_kernel_llvm_compile="true"              # LOS: TARGET_KERNEL_NO_GCC, LTO/CFI/SCS
 deviceinfo_kernel_use_lld="true"
@@ -23,7 +23,7 @@ deviceinfo_kernel_image_name="Image"
 
 # LOS 23.2 apollon cmdline + Ubuntu Touch additions
 # NOTE: header-v2 cmdline field is 512 bytes; Xiaomi ABL ignores the "extra" cmdline -> keep < 512, systempart FIRST.
-deviceinfo_kernel_cmdline="systempart=/dev/mapper/system androidboot.hardware=qcom androidboot.memcg=1 lpm_levels.sleep_disabled=1 msm_rtb.filter=0x237 service_locator.enable=1 androidboot.usbcontroller=a600000.dwc3 swiotlb=2048 loop.max_part=7 cgroup.memory=nokmem,nosocket reboot=panic_warm androidboot.fstab_suffix=qcom apparmor=1 lsm=lockdown,yama,integrity,apparmor firmware_class.path=/vendor/firmware printk.devkmsg=on"
+deviceinfo_kernel_cmdline="systempart=/dev/mapper/system console=tty0 androidboot.hardware=qcom androidboot.memcg=1 lpm_levels.sleep_disabled=1 msm_rtb.filter=0x237 service_locator.enable=1 androidboot.usbcontroller=a600000.dwc3 swiotlb=2048 loop.max_part=7 cgroup.memory=nokmem,nosocket reboot=panic_warm androidboot.fstab_suffix=qcom apparmor=1 lsm=lockdown,yama,integrity,apparmor firmware_class.path=/vendor/firmware printk.devkmsg=on"
 
 # Boot image: header v2 like official LOS boot.img; A-only, separate 128 MiB recovery partition
 deviceinfo_bootimg_header_version="2"
@@ -46,5 +46,5 @@ deviceinfo_has_recovery_partition="false"
 deviceinfo_use_unified_recovery="false"
 
 deviceinfo_rootfs_image_sector_size="4096"
-deviceinfo_system_partition_size="4096M"          # grow `system` in super (drop product/system_ext)
+deviceinfo_system_partition_size="5120M"          # system partition was grown to 6 GiB (super)
 deviceinfo_use_overlaystore="true"

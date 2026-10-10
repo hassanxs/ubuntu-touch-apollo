@@ -1,7 +1,7 @@
 From 322d25c18f749f86b6c4b7a404df24bf65e09357 Mon Sep 17 00:00:00 2001
 From: Hassan <hafizhassanlatif@gmail.com>
 Date: Sat, 10 Oct 2026 20:46:44 +0500
-Subject: [PATCH 11/13] halium_apollo_defconfig: enable CONFIG_BT_HCIVHCI for
+Subject: [PATCH 11/15] halium_apollo_defconfig: enable CONFIG_BT_HCIVHCI for
  bluebinder
 
 bluebinder bridges the Android Bluetooth HAL to BlueZ through /dev/vhci.

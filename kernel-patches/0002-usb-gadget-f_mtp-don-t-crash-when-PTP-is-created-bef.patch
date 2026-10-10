@@ -1,7 +1,7 @@
 From 5c97545ae3b7ed5d5ea6c5c83b7f43b009676b91 Mon Sep 17 00:00:00 2001
 From: Hassan <hafizhassanlatif@gmail.com>
 Date: Sat, 10 Oct 2026 06:21:30 +0500
-Subject: [PATCH 02/13] usb: gadget: f_mtp: don't crash when PTP is created
+Subject: [PATCH 02/15] usb: gadget: f_mtp: don't crash when PTP is created
  before MTP
 
 alloc_inst_mtp_ptp(false) copies _mtp_dev and then does
