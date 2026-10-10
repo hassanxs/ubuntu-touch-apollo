@@ -321,3 +321,7 @@ Result: wlan0 + p2p0, NetworkManager scan OK.
 - Root cause is generic: gen-udev mapped Android user/group names that do not exist on the Ubuntu side to root.
   Now mapped to numeric Android IDs (camera 1006, log 1007, wifi 1010, vpn 1016, usb 1018, mtp 1024,
   drmrpc 1026, nfc 1027, uhid 3011, oem_NNNN → NNNN); 35 rules updated (camera nodes, qseecom, nfc, ...).
+
+### 2026-10-11 — GPS outdoor
+- Open garage: 13 satellites (12 above 30 dB). lomiri-location-serviced-cli --test restarts the engine per round;
+  HAL gnssLocationCb fixes after 49 s, 46 s, 69 s (cold, no XTRA). GPS works; XTRA left as an optional speed-up.

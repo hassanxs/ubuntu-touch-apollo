@@ -42,7 +42,7 @@
 | Stability | ⚠️ | killing PulseAudio during recording panics the kernel (ADSP SMMU fault) |
 | Flashlight | ✅ | Xiaomi `flashlight` LED via device-info |
 | Vibration | ❌ | aw8697 probes; waveform RAM not loaded at boot, still no output after reload (see porting log) |
-| GPS | ⚠️ | GNSS HAL works (15 satellites seen by a window); no fix indoors yet; XTRA/NTP assistance fails (no DNS for the container's location daemon) → slow cold starts; outdoor test pending |
+| GPS | ✅ | outdoor fix in ~45-70 s (cold start; XTRA assistance unavailable: no DNS/network for the container's location daemon) |
 | Fingerprint (enroll) | ✅ | FPC HAL via biometryd; needed AppArmor D-Bus mediation (kernel patches 0016-0017) |
 | Fingerprint unlock | ✅ | lock screen |
 | NFC (read tags) | ✅ | nfcd + binder plugin; YubiKey read as Type 4A/NDEF. Needed /dev/nq-nci owned by nfc (1027) |
