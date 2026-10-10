@@ -238,3 +238,7 @@ bluetooth, fscrypt not enabled on userdata (session warning only).
 4. Nothing writes ON to /dev/wlan on UT → `apollo-wlan-on.service` (+ /usr/local/sbin/apollo-wlan-on), waits for
    cnss "Calibration completed successfully", writes ON until wlan0 exists.
 Result: wlan0 + p2p0, NetworkManager scan OK.
+5. **No routes on wlan0 → DNS fails** (`unable to configure IPv4 route`, NM trace: "Nexthop has invalid gateway",
+   ENETUNREACH even for the subnet route). Nexthop backport in this 4.19 tree sets fc_gw_family=AF_INET for any
+   RTA_GATEWAY; NM 1.46 sends RTA_GATEWAY 0.0.0.0. Kernel fix (upstream behaviour): only set family if gw != 0.
+   Boot image v12 (kernel gc5b0caf59). Verified after reboot: auto-connect, default route, DNS, ping OK.

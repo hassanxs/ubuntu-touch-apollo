@@ -1,7 +1,7 @@
 From b619902c0b069cbaf58a9fd5c8ddd5e3c7c4982d Mon Sep 17 00:00:00 2001
 From: Hassan <hafizhassanlatif@gmail.com>
 Date: Sat, 10 Oct 2026 02:47:34 +0500
-Subject: [PATCH 1/7] arm64: add halium_apollo_defconfig (LineageOS 23.2
+Subject: [PATCH 1/8] arm64: add halium_apollo_defconfig (LineageOS 23.2
  apollon config + Halium/UT requirements)
 
 Merged vendor/kona-perf_defconfig + debugfs.config + xiaomi/sm8250-common.config +

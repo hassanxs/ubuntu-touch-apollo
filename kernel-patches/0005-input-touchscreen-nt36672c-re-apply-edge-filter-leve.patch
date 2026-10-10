@@ -1,7 +1,7 @@
 From 12942f7a5403c41931ede2650818912a62533236 Mon Sep 17 00:00:00 2001
 From: Hassan <hafizhassanlatif@gmail.com>
 Date: Sat, 10 Oct 2026 16:44:38 +0500
-Subject: [PATCH 5/7] input: touchscreen: nt36672c: re-apply edge filter level
+Subject: [PATCH 5/8] input: touchscreen: nt36672c: re-apply edge filter level
  after resume
 
 The touch firmware is re-downloaded on every resume, which resets the

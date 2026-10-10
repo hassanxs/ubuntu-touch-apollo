@@ -1,6 +1,6 @@
 # Ubuntu Touch for Xiaomi Mi 10T (apollo) — WORK IN PROGRESS
 
-> **Status: WIP / experimental.** Boots to the Lomiri home screen; Wi-Fi works. Many things don't yet.
+> **Status: WIP / experimental.** Boots to the Lomiri home screen; Wi-Fi + internet work. Many things don't yet.
 > Not ready for daily use. Flashing replaces Android on the device.
 
 | | |
@@ -19,7 +19,7 @@
 | Touchscreen incl. edge gestures | ✅ | edge filter lowered (`mi-touch-edge.service`) |
 | Setup wizard, lock screen, app launcher | ✅ | |
 | Wi-Fi scan/connect (QCA6390) | ✅ | wlan0 via `apollo-wlan-on.service` |
-| Wi-Fi browsing / DNS | ❌ | connects, but `ERR_NAME_NOT_RESOLVED` (investigating) |
+| Wi-Fi internet (routes, DNS, browsing) | ✅ | needed ipv4 0.0.0.0-gateway kernel fix (patch 0008) |
 | USB networking + SSH (debug) | ✅ | RNDIS 10.15.19.82 |
 | Battery level / charging indicator | ✅ | |
 | Audio (speaker, mic, earpiece) | ❌ | audio HAL crash-loops |
@@ -47,12 +47,13 @@
 4. **Lomiri crash loop** — `/dev/kgsl-3d0` root-only → udev rules generated from `ueventd.rc` (`overlay/etc/udev/rules.d/70-apollo.rules`).
 5. **Edge swipes** — Novatek grip filter → `mi-touch-mode 7 1` + re-apply on resume (patch 0005).
 6. **Wi-Fi** — firmware path (`/usr/lib/firmware -> /vendor/firmware_mnt/image`), ini path (patch 0007), driver ON at boot.
+7. **No IPv4 routes from NetworkManager** — kernel treated RTA_GATEWAY 0.0.0.0 as a real gateway (patch 0008).
 
 ## Building (outline)
 
 1. Apply `kernel-patches/` to LineageOS `android_kernel_xiaomi_sm8250` (lineage-23.2 @ `71b13e62f`), branch `halium-23.2`.
 2. Build with UBports `halium-generic-adaptation-build-tools` using `deviceinfo` (`tools/build-apollon.sh`).
-3. Boot image currently = build-tools boot.img kernel + ramdisk overlay that archives pstore (`tools/make-v3-logsave.sh`, `make-v6.sh`, `make-v11.sh`).
+3. Boot image currently = build-tools boot.img kernel + ramdisk overlay that archives pstore (`tools/make-v3-logsave.sh`, `make-v6.sh`, `make-v12.sh`).
 4. System: Halium 12 GSI + VNDK v30 APEX extracted from MIUI `system_ext` (see porting log), `system` partition grown to 6 GiB.
 
 Not yet a reproducible one-command build — the overlay still has to be folded into the image.
