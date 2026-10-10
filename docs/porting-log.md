@@ -297,7 +297,8 @@ Result: wlan0 + p2p0, NetworkManager scan OK.
   (no .bt_nv.bin in persist, no bdaddr property). Restarting the HAL + bluebinder later gave the right address.
   Fix: bluebinder drop-in also waits for vendor.radio.qcril_pre_init_lock_held=0 (qcril QMI pre-init done,
   max 90 s). Verified across a reboot with a copy in /etc/systemd/system/bluebinder.service.d/ (writable path;
-  delete it after flashing the next image, the overlay has the same file).
+  delete it after flashing the next image, the overlay has the same file). Same for
+  /etc/udev/rules.d/71-apollo-nfc-tmp.rules (nq-nci owner until the next image).
 
 ### 2026-10-11 — GPS (partial)
 - gnss_service + loc_launcher run in the container; lomiri-location-serviced (gps::Provider) works.
