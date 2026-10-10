@@ -34,7 +34,7 @@
 | SMS send / receive | ✅ | incoming SMS arrive over IMS → `extPlugin=qti` in `binder.conf` |
 | VoLTE (IMS) | ✅ | via ofono-binder-plugin-ext-qti |
 | Outgoing calls | ✅ | |
-| Bluetooth (on, scan, pairing) | ✅ | bluebinder wait fix + CONFIG_BT_HCIVHCI; paired with a laptop |
+| Bluetooth (on, scan, pairing) | ✅ | bluebinder waits for the HAL and the modem (factory BD address from modem NV) + CONFIG_BT_HCIVHCI |
 | Bluetooth audio (A2DP) | ✅ | dual-mode buds: Settings may pair only the LE side; pair the classic (BR/EDR) side, see porting log |
 | Camera: photos (back + front) | ✅ | Xiaomi sensor driver close fix + firmware path fix (kernel) |
 | Camera: video recording (with sound) | ✅ | libgbinder ApiLevel=32 so the AudioFlinger bridge registers |
@@ -43,7 +43,7 @@
 | Flashlight | ✅ | Xiaomi `flashlight` LED via device-info |
 | Vibration | ❌ | aw8697 probes; waveform RAM not loaded at boot, still no output after reload (see porting log) |
 | Fingerprint (enroll) | ✅ | FPC HAL via biometryd; needed AppArmor D-Bus mediation (kernel patches 0016-0017) |
-| Fingerprint unlock | ❓ | not tested yet |
+| Fingerprint unlock | ✅ | lock screen |
 | NFC | ❓ | not tested |
 | Suspend / screen-off power | ❓ | screen off/on works |
 | Home encryption (fscrypt) | ❌ | userdata lacks `encrypt` feature (warning only) |

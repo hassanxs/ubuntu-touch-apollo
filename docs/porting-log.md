@@ -288,3 +288,13 @@ Result: wlan0 + p2p0, NetworkManager scan OK.
 - Result: aa_is_enabled 1, dbus returns the label, no dbus AppArmor denials at boot; fingerprint enrolment works
   (user confirmed), Camera/Browser/Phone apps fine with mediation on.
 - The 4.14 Halium AppArmor set (af_unix SAUCE) is still not applied; not needed so far.
+
+### 2026-10-11 — Fingerprint unlock, Bluetooth address
+- Fingerprint unlock on the lock screen works (user confirmed). Keyboard vibration still none.
+- Bluetooth used a placeholder address (FF:DD:01:..) on the install image; the earlier dev build had the factory
+  Xiaomi address (34:1C:F0:..; pairings are stored per controller address in /var/lib/bluetooth).
+  The QTI HAL reads the BD address from the external SDX55 modem's NV over QMI, once, when bluebinder opens it
+  (no .bt_nv.bin in persist, no bdaddr property). Restarting the HAL + bluebinder later gave the right address.
+  Fix: bluebinder drop-in also waits for vendor.radio.qcril_pre_init_lock_held=0 (qcril QMI pre-init done,
+  max 90 s). Verified across a reboot with a copy in /etc/systemd/system/bluebinder.service.d/ (writable path;
+  delete it after flashing the next image, the overlay has the same file).
