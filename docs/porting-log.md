@@ -338,3 +338,13 @@ Result: wlan0 + p2p0, NetworkManager scan OK.
   the SoC never suspended. repowerd: "Failed to initialize libsuspend" → logind fallback. libsuspend's
   autosleep backend needs /sys/power/autosleep = CONFIG_PM_AUTOSLEEP (off in LineageOS, which suspends via the
   Android system_suspend HAL). Patch 0018 enables it in halium.config (+ halium_apollo_defconfig).
+
+### 2026-10-11 — Overlay units did not start on a fresh install
+- After flashing the release candidate, apollo-audio-hw-socket (new, no /etc copy) never started. The overlay
+  becomes visible only after mount-halium-overlay's daemon-reload (Before=sysinit.target); the boot transaction
+  is already built then, so the overlay's multi-user.target.wants links are ignored for this boot.
+- The other units (wlan-on, audio-policy, touch-edge) and drop-ins only worked because the dev build had left
+  copies in the writable /etc/systemd/system (they also override the image's same-named drop-ins), plus an old
+  /etc/udev/rules.d/70-apollo.rules with root mappings. A fresh install would have had no Wi-Fi power-on.
+- Fix: lxc-android-config drop-in 20-apollo-start-units.conf (that service starts after the reload) does
+  `systemctl --no-block start` of the port's units. Test with the /etc leftovers moved away.

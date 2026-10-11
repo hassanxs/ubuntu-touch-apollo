@@ -1,6 +1,5 @@
 [Unit]
 Description=Mi 10T: audio HAL control socket for PulseAudio (ultrasound proximity)
-Before=lxc-android-config.service
 
 [Service]
 ExecStart=/usr/local/sbin/apollo-audio-hw-socket
