@@ -348,3 +348,9 @@ Result: wlan0 + p2p0, NetworkManager scan OK.
   /etc/udev/rules.d/70-apollo.rules with root mappings. A fresh install would have had no Wi-Fi power-on.
 - Fix: lxc-android-config drop-in 20-apollo-start-units.conf (that service starts after the reload) does
   `systemctl --no-block start` of the port's units. Test with the /etc leftovers moved away.
+- Fresh-style boot (leftovers moved to /root/dev-etc-backup on the device): all port units started via the
+  lxc-android-config drop-in, Wi-Fi up, BT factory address, NFC/elliptic/camera node owners from the image rules.
+- MIUI's vendor init.qcom.rc overrides vendor.audio-hal and declares `socket audio_hw_socket` again → the hook now
+  strips the line from both .rc files.
+- Autosleep (patch 0018): /sys/power/autosleep = "mem" set by repowerd's libsuspend autosleep backend (the earlier
+  "Failed to initialize libsuspend" was from the boot before). No suspends while the USB cable is attached.

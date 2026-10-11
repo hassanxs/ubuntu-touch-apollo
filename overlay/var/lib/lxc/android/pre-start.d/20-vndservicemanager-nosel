@@ -30,9 +30,11 @@ fi
 bind $VSM $R/vendor/bin/vndservicemanager
 bind $O/audio-hal-stub $R/vendor/bin/hw/android.hardware.audio.service
 bind $O/audio-hal-stub $R/system/bin/storaged
-ARC=$R/vendor/etc/init/android.hardware.audio.service.rc
-if [ -f $ARC ] && ! grep -q " $ARC " /proc/mounts; then
-    grep -v "socket audio_hw_socket" $ARC > $RUN/android.hardware.audio.service.rc
-fi
-bind $RUN/android.hardware.audio.service.rc $ARC
+# the socket is declared in the audio service .rc and again in MIUI's init.qcom.rc (service override)
+for ARC in $R/vendor/etc/init/android.hardware.audio.service.rc $R/vendor/etc/init/hw/init.qcom.rc; do
+    if [ -f $ARC ] && ! grep -q " $ARC " /proc/mounts; then
+        grep -v "socket audio_hw_socket" $ARC > $RUN/${ARC##*/}
+    fi
+    bind $RUN/${ARC##*/} $ARC
+done
 exit 0
