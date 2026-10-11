@@ -2,6 +2,8 @@
 
 > **Status: WIP / experimental.** Boots to the Lomiri home screen; Wi-Fi, mobile data, calls, SMS, audio, Bluetooth, camera (photo + video), flashlight, auto-brightness, proximity and fingerprint enrolment work. Many things don't yet.
 > Not ready for daily use. Flashing replaces Android on the device.
+>
+> **Try it:** images are on the [Releases](https://github.com/hassanxs/ubuntu-touch-apollo/releases) page; follow [docs/INSTALL.md](docs/INSTALL.md).
 
 | | |
 |---|---|
@@ -48,7 +50,7 @@
 | Fingerprint (enroll) | ✅ | FPC HAL via biometryd; needed AppArmor D-Bus mediation (kernel patches 0016-0017) |
 | Fingerprint unlock | ✅ | lock screen |
 | NFC (read tags) | ✅ | nfcd + binder plugin; YubiKey read as Type 4A/NDEF. Needed /dev/nq-nci owned by nfc (1027) |
-| Suspend / screen-off power | ⚠️ | before patch 0018 the SoC never suspended (CONFIG_PM_AUTOSLEEP off): ~1.3 %/h idle; incoming calls still woke it. Autosleep enabled in 0018, under test |
+| Suspend / screen-off power | ⚠️ | autosleep enabled (patch 0018; libsuspend uses it). Before it: no suspend, ~1.3 %/h idle, calls woke the phone. Drain with suspend not measured yet |
 | Home encryption (fscrypt) | ⚪ | optional, not enabled: userdata lacks the ext4 `encrypt` flag (one-way `tune2fs` change, deliberately skipped) |
 
 ## System updates (OTA)
@@ -91,5 +93,4 @@ Follows the UBports porting guide (standalone kernel + Halium 12 GSI, `deviceinf
    `system-image-from-ota.sh`) and adds the VNDK v30 APEX (extracted from MIUI V14.0.4.0 `system_ext` with
    `tools/extract-vndk30.sh` + `tools/flatten-vndk30.sh`; proprietary, not in this repo) to the Halium `android-rootfs.img`.
 3. Output: `boot.img` (boot partition) and `rootfs.img` (system partition, grown to 6 GiB in `super`).
-4. Flash from LineageOS recovery's fastbootd: `fastboot flash system rootfs.img`, `fastboot flash boot boot.img`
-   (userdata is kept). Tested 2026-10-11: all features in the table come up from the image alone.
+4. Install: see [docs/INSTALL.md](docs/INSTALL.md) (fastbootd: `system`, `boot`, disabled `vbmeta`; format userdata on first install).
