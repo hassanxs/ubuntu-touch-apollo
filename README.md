@@ -18,10 +18,11 @@
 | Boot to Lomiri, display, GPU (Adreno, GLES 3.2) | ✅ | 1080×2400 |
 | Touchscreen incl. edge gestures | ✅ | edge filter lowered (`mi-touch-edge.service`) |
 | Setup wizard, lock screen, app launcher | ✅ | |
-| Wi-Fi scan/connect (QCA6390) | ✅ | wlan0 via `apollo-wlan-on.service` |
+| Wi-Fi scan/connect (QCA6390) | ✅ | wlan0 via `apollo-wlan-on.service`; 5 GHz 802.11ac 2x2 80 MHz = 866.7 Mbit/s link (chip also does 802.11ax) |
 | Wi-Fi internet (routes, DNS, browsing) | ✅ | needed ipv4 0.0.0.0-gateway kernel fix (patch 0008) |
 | USB networking + SSH (debug) | ✅ | RNDIS 10.15.19.82 |
-| Battery level / charging indicator | ✅ | |
+| Battery level / charging indicator | ✅ | level steady, no jumps |
+| Screenshots (Vol up + Vol down), hardware buttons | ✅ | |
 | Audio: speaker playback | ✅ | pulseaudio-droid + MIUI HAL |
 | Audio: microphone | ✅ | mono `handset-mic` route; level low until ACDB calibration works |
 | Audio: earpiece / headset | ✅ / ❓ | earpiece OK in calls; headset not tested |
