@@ -354,3 +354,7 @@ Result: wlan0 + p2p0, NetworkManager scan OK.
   strips the line from both .rc files.
 - Autosleep (patch 0018): /sys/power/autosleep = "mem" set by repowerd's libsuspend autosleep backend (the earlier
   "Failed to initialize libsuspend" was from the boot before). No suspends while the USB cable is attached.
+- Flashlight broke after moving the /etc leftovers: the torch chmod rule in the overlay's 70-android.rules never
+  applies on a fresh install (LED add event happens at coldplug, before the overlay is mounted); it only worked
+  via the dev build's /etc/udev/rules.d/71-apollo-torch.rules. Fix: the container hook chmods it at every boot.
+  (Device rules for nodes like nq-nci/elliptic do apply — udev re-reads rules later; RUN on "add" does not.)

@@ -37,4 +37,7 @@ for ARC in $R/vendor/etc/init/android.hardware.audio.service.rc $R/vendor/etc/in
     fi
     bind $RUN/${ARC##*/} $ARC
 done
+# flashlight LED for the session (indicator runs as phablet). The udev rule in the overlay's 70-android.rules
+# comes too late: the LED "add" event fires during coldplug, before the overlay is mounted.
+[ -e /sys/class/leds/flashlight/brightness ] && chmod 0666 /sys/class/leds/flashlight/brightness
 exit 0
