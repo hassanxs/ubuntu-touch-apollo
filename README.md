@@ -50,6 +50,14 @@
 | Suspend / screen-off power | ✅ / ❓ | incoming call wakes the screen-off phone (no cable); battery drain not measured |
 | Home encryption (fscrypt) | ⚪ | optional, not enabled: userdata lacks the ext4 `encrypt` flag (one-way `tune2fs` change, deliberately skipped) |
 
+## System updates (OTA)
+
+The image is configured for `system-image.ubports.com`, channel `24.04-2.x/arm64/android9plus/daily`, device `apollo`
+(build number 0). UBports publishes no `apollo` device in that channel (checked 2026-10-11: `index.json` returns 404),
+so Settings → Updates finds nothing and is harmless. If an official `apollo` build ever appears there, do **not**
+install it over this port without checking it: it would replace this kernel/overlay. Update by flashing a newer
+image from this repository instead.
+
 ## Repository layout
 
 - `deviceinfo` — UBports halium-generic-adaptation-build-tools device config (cmdline must stay < 512 bytes, `systempart` first: Xiaomi ABL ignores the extra cmdline field).
