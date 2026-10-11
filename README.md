@@ -20,7 +20,8 @@
 | Setup wizard, lock screen, app launcher | ✅ | |
 | Wi-Fi scan/connect (QCA6390) | ✅ | wlan0 via `apollo-wlan-on.service`; 5 GHz 802.11ac 2x2 80 MHz = 866.7 Mbit/s link (chip also does 802.11ax) |
 | Wi-Fi internet (routes, DNS, browsing) | ✅ | needed ipv4 0.0.0.0-gateway kernel fix (patch 0008) |
-| USB networking + SSH (debug) | ✅ | RNDIS 10.15.19.82 |
+| USB file transfer (MTP) | ✅ | default USB mode; copied files both ways with Windows |
+| USB networking + SSH (debug) | ✅ | RNDIS 10.15.19.82 (`usb_moded_util -s developer_mode`) |
 | Battery level / charging indicator | ✅ | level steady, no jumps |
 | Screenshots (Vol up + Vol down), hardware buttons | ✅ | |
 | Audio: speaker playback | ✅ | pulseaudio-droid + MIUI HAL |
