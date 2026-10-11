@@ -41,7 +41,7 @@
 | Camera: photos (back + front) | ✅ | Xiaomi sensor driver close fix + firmware path fix (kernel) |
 | Camera: video recording (with sound) | ✅ | libgbinder ApiLevel=32 so the AudioFlinger bridge registers |
 | Video playback (venus) | ✅ | gallery playback OK |
-| Stability | ⚠️ | killing PulseAudio during recording panics the kernel (ADSP SMMU fault) |
+| Stability | ⚠️ | killing PulseAudio during recording panics the kernel (ADSP SMMU fault); Camera app segfaults on exit (harmless) |
 | Flashlight | ✅ | Xiaomi `flashlight` LED via device-info |
 | Vibration | ❌ | aw8697 probes; waveform RAM not loaded at boot, still no output after reload (see porting log) |
 | GPS | ✅ | outdoor fix in ~45-70 s (cold start; XTRA assistance unavailable: no DNS/network for the container's location daemon) |

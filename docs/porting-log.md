@@ -325,3 +325,10 @@ Result: wlan0 + p2p0, NetworkManager scan OK.
 ### 2026-10-11 — GPS outdoor
 - Open garage: 13 satellites (12 above 30 dB). lomiri-location-serviced-cli --test restarts the engine per round;
   HAL gnssLocationCb fixes after 49 s, 46 s, 69 s (cold, no XTRA). GPS works; XTRA left as an optional speed-up.
+
+### 2026-10-11 — MTP, Wi-Fi standard, OTA, camera exit crash
+- USB MTP (default mode) works with Windows, copy both ways. Wi-Fi: 5 GHz ch149 802.11ac VHT-MCS9 2x2 80 MHz
+  (866.7 Mbit/s); phy advertises HE (802.11ax) too.
+- OTA: channel 24.04-2.x/arm64/android9plus/daily has no "apollo" device (index.json 404) → updater finds nothing.
+- Camera app SIGSEGV happens on exit, after qtmir stopped the session ("MirGlBuffer::~MirGlBuffer: no context");
+  no effect on photos/videos or the next launch. Upstream app/qtmir teardown issue, not port-specific → left.
