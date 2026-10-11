@@ -48,7 +48,7 @@
 | Fingerprint (enroll) | ✅ | FPC HAL via biometryd; needed AppArmor D-Bus mediation (kernel patches 0016-0017) |
 | Fingerprint unlock | ✅ | lock screen |
 | NFC (read tags) | ✅ | nfcd + binder plugin; YubiKey read as Type 4A/NDEF. Needed /dev/nq-nci owned by nfc (1027) |
-| Suspend / screen-off power | ✅ / ❓ | incoming call wakes the screen-off phone (no cable); battery drain not measured |
+| Suspend / screen-off power | ⚠️ | before patch 0018 the SoC never suspended (CONFIG_PM_AUTOSLEEP off): ~1.3 %/h idle; incoming calls still woke it. Autosleep enabled in 0018, under test |
 | Home encryption (fscrypt) | ⚪ | optional, not enabled: userdata lacks the ext4 `encrypt` flag (one-way `tune2fs` change, deliberately skipped) |
 
 ## System updates (OTA)

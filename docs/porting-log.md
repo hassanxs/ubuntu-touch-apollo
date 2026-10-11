@@ -332,3 +332,9 @@ Result: wlan0 + p2p0, NetworkManager scan OK.
 - OTA: channel 24.04-2.x/arm64/android9plus/daily has no "apollo" device (index.json 404) → updater finds nothing.
 - Camera app SIGSEGV happens on exit, after qtmir stopped the session ("MirGlBuffer::~MirGlBuffer: no context");
   no effect on photos/videos or the next launch. Upstream app/qtmir teardown issue, not port-specific → left.
+
+### 2026-10-11 — Suspend (kernel patch 0018)
+- Idle test: 100 % → 90 % in 7 h 50 min (~1.3 %/h) — but /sys/power/suspend_stats success = 0 after 10.8 h:
+  the SoC never suspended. repowerd: "Failed to initialize libsuspend" → logind fallback. libsuspend's
+  autosleep backend needs /sys/power/autosleep = CONFIG_PM_AUTOSLEEP (off in LineageOS, which suspends via the
+  Android system_suspend HAL). Patch 0018 enables it in halium.config (+ halium_apollo_defconfig).
